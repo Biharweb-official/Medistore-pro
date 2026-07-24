@@ -3,57 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediStore Pro - Ultimate Edition</title>
+    <title>MediStore Pro - Retail & Wholesale Edition</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f0f2f5; padding: 15px; color: #333; }
-        .container { max-width: 1160px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h2, h3 { color: #1abc9c; text-align: center; margin-bottom: 15px; }
-        .auth-container { max-width: 500px; margin: 30px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        body { background-color: #f4f7f6; padding: 15px; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+        h2, h3 { color: #0e6655; text-align: center; margin-bottom: 15px; }
+        .auth-container { max-width: 450px; margin: 25px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 5px solid #1abc9c; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #555; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
-        .action-btn { background-color: #1abc9c; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 10px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: #444; }
+        input, select { width: 100%; padding: 11px; border: 1px solid #bdc3c7; border-radius: 6px; font-size: 14px; background: #fafafa; }
+        input:focus, select:focus { border-color: #1abc9c; outline: none; background: #fff; }
+        .action-btn { background-color: #1abc9c; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 10px; transition: 0.2s; }
         .action-btn:hover { background-color: #16a085; }
         #appDashboard { display: none; }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-bottom: 20px; }
-        .logout-btn { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .dashboard-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: #fdf9fa; padding: 15px; border-radius: 8px; border-left: 5px solid #1abc9c; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; flex-wrap: wrap; }
-        .tab-btn { background: #bdc3c7; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #fff; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 12px; margin-bottom: 20px; }
+        .logout-btn { background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .dashboard-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: #fdfefe; padding: 18px; border-radius: 8px; border-left: 5px solid #1abc9c; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eaeded; }
+        .stat-card h4 { font-size: 13px; color: #7f8c8d; text-transform: uppercase; }
+        .stat-card p { font-size: 20px; font-weight: bold; color: #2c3e50; margin-top: 6px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #ecf0f1; padding-bottom: 12px; flex-wrap: wrap; }
+        .tab-btn { background: #95a5a6; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #fff; transition: 0.2s; }
         .tab-btn.active { background: #1abc9c; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        .table-container { overflow-x: auto; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-        th, td { border: 1px solid #e0e0e0; padding: 10px; text-align: left; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .table-container { overflow-x: auto; margin-top: 15px; border-radius: 6px; border: 1px solid #ecf0f1; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+        th, td { padding: 12px; border-bottom: 1px solid #ecf0f1; }
         th { background-color: #2c3e50; color: white; }
+        tr:nth-child(even) { background-color: #f9fbfb; }
+        .expired { background-color: #fadbd8 !important; }
+        .near-expiry { background-color: #fdebd0 !important; }
+        .badge-low { background: #e74c3c; color: white; padding: 3px 7px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .invoice-box { background: #fff; padding: 25px; border: 1px dashed #7f8c8d; margin-top: 25px; border-radius: 8px; display: none; }
+        .search-box { margin-bottom: 15px; display: flex; gap: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- AUTH SECTION (Both Visible to avoid click errors) -->
+    <!-- AUTH SECTION -->
     <div id="authSection">
-        <h1 style="text-align:center; color:#2c3e50; margin-top:20px;">MediStore Pro Setup</h1>
+        <h1 style="text-align:center; color:#2c3e50; margin: 20px 0 10px;">MediStore Pro Portal</h1>
+        <p style="text-align:center; color:#7f8c8d; margin-bottom:20px;">Retail & Wholesale Pharmacy Management System</p>
         
-        <!-- Register Form Box -->
         <div class="auth-container">
-            <h2>1. Register New Store First</h2>
-            <div class="form-group"><label>Store Name:</label><input type="text" id="regStoreName" placeholder="City Medical"></div>
+            <h2>Register New Store</h2>
+            <div class="form-group"><label>Store / Firm Name:</label><input type="text" id="regStoreName" placeholder="City Medical & Pharma"></div>
             <div class="form-group"><label>Owner Name:</label><input type="text" id="regOwner" placeholder="Your Name"></div>
-            <div class="form-group"><label>Email:</label><input type="text" id="regEmail" placeholder="abc@gmail.com"></div>
-            <div class="form-group"><label>Password:</label><input type="password" id="regPass" placeholder="Password"></div>
-            <button class="action-btn" onclick="handleRegister()">Register Store</button>
+            <div class="form-group"><label>Email Address:</label><input type="text" id="regEmail" placeholder="store@gmail.com"></div>
+            <div class="form-group"><label>Password:</label><input type="password" id="regPass" placeholder="••••••••"></div>
+            <button class="action-btn" onclick="handleRegister()">Register Account</button>
         </div>
 
-        <!-- Login Form Box -->
-        <div class="auth-container">
-            <h2>2. Then Login Here</h2>
-            <div class="form-group"><label>Email:</label><input type="text" id="loginEmail" placeholder="abc@gmail.com"></div>
-            <div class="form-group"><label>Password:</label><input type="password" id="loginPass" placeholder="Password"></div>
-            <button class="action-btn" style="background-color: #2c3e50;" onclick="handleLogin()">Login to Dashboard</button>
+        <div class="auth-container" style="border-top-color: #2c3e50;">
+            <h2>Store Login</h2>
+            <div class="form-group"><label>Email Address:</label><input type="text" id="loginEmail" placeholder="store@gmail.com"></div>
+            <div class="form-group"><label>Password:</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+            <button class="action-btn" style="background-color: #2c3e50;" onclick="handleLogin()">Login Dashboard</button>
         </div>
     </div>
 
@@ -61,67 +69,121 @@
     <div id="appDashboard" class="container">
         <div class="header-bar">
             <div>
-                <h2 id="storeTitle" style="text-align: left; margin: 0;">Store Dashboard</h2>
-                <small id="ownerTitle" style="color: #666;"></small>
+                <h2 id="storeTitle" style="text-align: left; margin: 0; color: #2c3e50;">Store Dashboard</h2>
+                <small id="ownerTitle" style="color: #7f8c8d; font-weight: 500;"></small>
             </div>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
+        <!-- Stats Overview -->
         <div class="dashboard-stats">
-            <div class="stat-card"><h4>Total Items</h4><p id="statTotalItems">0</p></div>
-            <div class="stat-card"><h4>Stock Value</h4><p id="statStockVal">₹0</p></div>
-            <div class="stat-card"><h4>Today Revenue</h4><p id="statRevenue" style="color: #27ae60;">₹0</p></div>
+            <div class="stat-card"><h4>Total Stock Units</h4><p id="statTotalItems">0</p></div>
+            <div class="stat-card"><h4>Inventory Valuation</h4><p id="statStockVal">₹0</p></div>
+            <div class="stat-card"><h4>Expiry Alerts</h4><p id="statExpiryAlert" style="color: #e74c3c;">0</p></div>
+            <div class="stat-card"><h4>Today's Revenue</h4><p id="statRevenue" style="color: #27ae60;">₹0</p></div>
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(event, 'inventoryTab')">Inventory</button>
-            <button class="tab-btn" onclick="switchTab(event, 'posTab')">POS Billing</button>
-            <button class="tab-btn" onclick="switchTab(event, 'salesTab')">Sales History</button>
+            <button class="tab-btn active" onclick="switchTab(event, 'inventoryTab')">📦 Inventory & Stock</button>
+            <button class="tab-btn" onclick="switchTab(event, 'posTab')">💳 Retail / Wholesale POS</button>
+            <button class="tab-btn" onclick="switchTab(event, 'salesTab')">📊 Sales & B2B Reports</button>
         </div>
 
+        <!-- Inventory Tab -->
         <div id="inventoryTab" class="tab-content active">
-            <h3>Add Medicines</h3>
+            <h3>Manage Medicine Inventory (Retail & Wholesale)</h3>
             <div class="form-grid">
-                <div><label>Name</label><input type="text" id="medName" placeholder="Paracetamol"></div>
-                <div><label>Batch</label><input type="text" id="medBatch" placeholder="B1"></div>
-                <div><label>Expiry</label><input type="date" id="medExpiry"></div>
-                <div><label>Qty</label><input type="number" id="medQty" placeholder="10"></div>
-                <div><label>MRP (₹)</label><input type="number" id="medPrice" placeholder="50"></div>
+                <div><label>Medicine Name (Brand)</label><input type="text" id="medName" placeholder="e.g. Augmentin 625"></div>
+                <div><label>Salt / Generic Formula</label><input type="text" id="medSalt" placeholder="e.g. Amoxycillin & Clavulanate"></div>
+                <div><label>Batch Number</label><input type="text" id="medBatch" placeholder="e.g. B-901"></div>
+                <div><label>Supplier Name</label><input type="text" id="medSupplier" placeholder="e.g. Apex Pharma"></div>
+                <div><label>Expiry Date</label><input type="date" id="medExpiry"></div>
+                <div><label>Total Units / Quantity</label><input type="number" id="medQty" placeholder="500"></div>
+                <div><label>Retail MRP (₹)</label><input type="number" id="medPrice" placeholder="55.00"></div>
+                <div><label>Wholesale Rate (₹)</label><input type="number" id="medWholesalePrice" placeholder="45.00"></div>
             </div>
-            <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addMedicine()">Add to Stock</button>
+            <button class="action-btn" style="width: auto; padding: 10px 25px;" onclick="addMedicine()">➕ Add Item to Stock</button>
+
+            <div class="search-box" style="margin-top: 20px;">
+                <input type="text" id="searchInventoryInput" placeholder="🔍 Search inventory by name or salt..." onkeyup="filterInventory()">
+            </div>
+
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Name</th><th>Batch</th><th>Expiry</th><th>Qty</th><th>MRP</th><th>Action</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Salt Formula</th>
+                            <th>Batch</th>
+                            <th>Supplier</th>
+                            <th>Expiry</th>
+                            <th>Stock Qty</th>
+                            <th>Retail MRP</th>
+                            <th>Wholesale Rate</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
                     <tbody id="inventoryTableBody"></tbody>
                 </table>
             </div>
         </div>
 
+        <!-- POS Billing Tab -->
         <div id="posTab" class="tab-content">
-            <h3>POS Counter</h3>
+            <h3>Dual Billing Counter (Retail Customer / Wholesale Party)</h3>
             <div class="form-grid">
-                <div><label>Select Medicine</label><select id="posMedSelect" onchange="updatePosDetails()"></select></div>
-                <div><label>Stock</label><input type="text" id="posAvailableQty" disabled></div>
-                <div><label>Price</label><input type="text" id="posPrice" disabled></div>
-                <div><label>Qty</label><input type="number" id="posQty" value="1" min="1"></div>
+                <div>
+                    <label>Select Billing Mode</label>
+                    <select id="billingMode" onchange="toggleBillingMode()">
+                        <option value="retail">Retail Mode (Patient / Consumer)</option>
+                        <option value="wholesale">Wholesale Mode (B2B Chemist / Hospital)</option>
+                    </select>
+                </div>
+                <div id="customerNameField"><label>Customer / Patient Name</label><input type="text" id="posCustomerName" placeholder="Customer Name"></div>
+                <div id="wholesalePartyField" style="display:none;"><label>Wholesale Party / Firm Name</label><input type="text" id="posPartyName" placeholder="Chemist Firm Name"></div>
+                <div id="wholesaleGstField" style="display:none;"><label>Party GSTIN Number</label><input type="text" id="posPartyGstin" placeholder="22AAAAA0000A1Z5"></div>
+                <div><label>Select Medicine (FEFO Sorted)</label><select id="posMedSelect" onchange="updatePosDetails()"></select></div>
+                <div><label>Available Stock</label><input type="text" id="posAvailableQty" disabled></div>
+                <div><label>Unit Price (₹)</label><input type="text" id="posPrice" disabled></div>
+                <div><label>Quantity</label><input type="number" id="posQty" value="1" min="1"></div>
             </div>
-            <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addToCart()">Add to Cart</button>
+            <button class="action-btn" style="width: auto; padding: 10px 25px;" onclick="addToCart()">🛒 Add Item to Cart</button>
+
             <div class="table-container">
-                <h4>Cart</h4>
+                <h4 style="margin: 10px 0; color: #2c3e50;">Current Cart Items</h4>
                 <table>
-                    <thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th><th>Action</th></tr></thead>
+                    <thead><tr><th>Medicine Name</th><th>Qty</th><th>Unit Price</th><th>Total Price</th><th>Action</th></tr></thead>
                     <tbody id="cartTableBody"></tbody>
                 </table>
             </div>
-            <h3 style="text-align: right; margin-top: 15px;" id="cartGrandTotal">Grand Total: ₹0</h3>
-            <button class="action-btn" onclick="checkoutBill()">Checkout</button>
+            <h3 style="text-align: right; margin-top: 15px; color: #2c3e50;" id="cartGrandTotal">Grand Total: ₹0</h3>
+            <button class="action-btn" onclick="checkoutBill()">✅ Complete Transaction & Print Invoice</button>
+
+            <!-- Printable Invoice Receipt Box -->
+            <div id="invoiceReceiptBox" class="invoice-box">
+                <h3 id="invStoreHeader" style="margin-bottom:5px; color:#2c3e50;">Tax Invoice</h3>
+                <p id="invMetaInfo" style="font-size:13px; color:#555; margin-bottom:12px;"></p>
+                <hr style="border:0; border-top:1px solid #bdc3c7; margin-bottom:12px;">
+                <table style="width:100%; font-size:13px; margin-bottom:15px;">
+                    <thead><tr><th>Item Name</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+                    <tbody id="invReceiptItemsBody"></tbody>
+                </table>
+                <div id="taxBreakupBox" style="font-size: 12px; color: #555; margin-bottom: 15px; border-top: 1px dashed #ccc; padding-top: 8px;"></div>
+                <h4 id="invReceiptTotal" style="text-align:right; margin-bottom:15px; color:#2c3e50;"></h4>
+                <button class="action-btn" style="background:#3498db; width:auto; padding:8px 20px;" onclick="window.print()">🖨️ Print Invoice</button>
+            </div>
         </div>
 
+        <!-- Sales History Tab -->
         <div id="salesTab" class="tab-content">
-            <h3>Sales History</h3>
+            <h3>Sales & Transaction Records (Retail & B2B Wholesale)</h3>
+            <div class="search-box">
+                <input type="text" id="searchSalesInput" placeholder="🔍 Search records by Invoice ID or Buyer Name..." onkeyup="filterSales()">
+            </div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>ID</th><th>Date</th><th>Items</th><th>Total</th></tr></thead>
+                    <thead><tr><th>Invoice ID</th><th>Mode</th><th>Buyer / Customer Info</th><th>Date & Time</th><th>Net Amount</th></tr></thead>
                     <tbody id="salesTableBody"></tbody>
                 </table>
             </div>
@@ -137,10 +199,10 @@
             let owner = document.getElementById('regOwner').value.trim();
             let email = document.getElementById('regEmail').value.trim();
             let pass = document.getElementById('regPass').value.trim();
-            if(!store || !owner || !email || !pass) { alert('Fill all fields in register!'); return; }
+            if(!store || !owner || !email || !pass) { alert('Please fill all registration fields!'); return; }
             db.users.push({ store, owner, email, pass });
             saveData();
-            alert('Registered Successfully! Now login below.');
+            alert('Store Registered Successfully! Please login below.');
             document.getElementById('loginEmail').value = email;
         }
 
@@ -153,7 +215,7 @@
                 saveData();
                 checkSession();
             } else {
-                alert('Invalid Login! Please register first if not done.');
+                alert('Invalid Email or Password!');
             }
         }
 
@@ -179,16 +241,47 @@
             evt.currentTarget.classList.add('active');
         }
 
+        function toggleBillingMode() {
+            let mode = document.getElementById('billingMode').value;
+            if(mode === 'wholesale') {
+                document.getElementById('customerNameField').style.display = 'none';
+                document.getElementById('wholesalePartyField').style.display = 'block';
+                document.getElementById('wholesaleGstField').style.display = 'block';
+            } else {
+                document.getElementById('customerNameField').style.display = 'block';
+                document.getElementById('wholesalePartyField').style.display = 'none';
+                document.getElementById('wholesaleGstField').style.display = 'none';
+            }
+            updatePosDetails();
+        }
+
         function addMedicine() {
             let name = document.getElementById('medName').value.trim();
+            let salt = document.getElementById('medSalt').value.trim();
             let batch = document.getElementById('medBatch').value.trim();
+            let supplier = document.getElementById('medSupplier').value.trim();
             let expiry = document.getElementById('medExpiry').value;
             let qty = parseInt(document.getElementById('medQty').value);
             let price = parseFloat(document.getElementById('medPrice').value);
-            if(!name || !batch || !expiry || isNaN(qty) || isNaN(price)) { alert('Invalid input'); return; }
-            db.inventory.push({ id: Date.now(), name, batch, expiry, qty, price });
+            let wholesalePrice = parseFloat(document.getElementById('medWholesalePrice').value);
+
+            if(!name || !salt || !batch || !supplier || !expiry || isNaN(qty) || isNaN(price) || isNaN(wholesalePrice)) {
+                alert('Please fill all item fields correctly!');
+                return;
+            }
+
+            db.inventory.push({ id: Date.now(), name, salt, batch, supplier, expiry, qty, price, wholesalePrice });
             saveData();
             refreshDashboard();
+            
+            document.getElementById('medName').value = '';
+            document.getElementById('medSalt').value = '';
+            document.getElementById('medBatch').value = '';
+            document.getElementById('medSupplier').value = '';
+            document.getElementById('medExpiry').value = '';
+            document.getElementById('medQty').value = '';
+            document.getElementById('medPrice').value = '';
+            document.getElementById('medWholesalePrice').value = '';
         }
 
         function deleteMedicine(id) {
@@ -198,41 +291,105 @@
         }
 
         function refreshDashboard() {
-            let invBody = document.getElementById('inventoryTableBody');
-            invBody.innerHTML = '';
-            let totalItems = 0, totalVal = 0, todayRev = 0;
+            renderInventoryTable(db.inventory);
+            let totalItems = 0, totalVal = 0, expiryAlerts = 0, todayRev = 0;
+            let today = new Date().toISOString().split('T')[0];
+
             db.inventory.forEach(i => {
                 totalItems += i.qty;
                 totalVal += (i.qty * i.price);
-                invBody.innerHTML += `<tr><td>${i.name}</td><td>${i.batch}</td><td>${i.expiry}</td><td>${i.qty}</td><td>₹${i.price}</td><td><button onclick="deleteMedicine(${i.id})" style="background:#e74c3c;color:#fff;border:none;padding:3px 8px;border-radius:3px;">Delete</button></td></tr>`;
+                if(i.expiry < today || i.expiry < new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0]) {
+                    expiryAlerts++;
+                }
             });
+
             db.sales.forEach(s => todayRev += s.total);
             document.getElementById('statTotalItems').innerText = totalItems;
             document.getElementById('statStockVal').innerText = '₹' + totalVal.toFixed(2);
+            document.getElementById('statExpiryAlert').innerText = expiryAlerts;
             document.getElementById('statRevenue').innerText = '₹' + todayRev.toFixed(2);
+
             updatePosDropdown();
-            updateSalesHistory();
+            renderSalesHistory(db.sales);
+        }
+
+        function renderInventoryTable(items) {
+            let invBody = document.getElementById('inventoryTableBody');
+            invBody.innerHTML = '';
+            let today = new Date().toISOString().split('T')[0];
+
+            items.forEach(i => {
+                let statusText = 'Safe';
+                let statusClass = '';
+                if(i.expiry < today) {
+                    statusText = 'Expired';
+                    statusClass = 'expired';
+                } else if(i.expiry < new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0]) {
+                    statusText = 'Near Expiry';
+                    statusClass = 'near-expiry';
+                }
+
+                invBody.innerHTML += `
+                    <tr class="${statusClass}">
+                        <td><b>${i.name}</b></td>
+                        <td><span style="color:#2980b9;">${i.salt}</span></td>
+                        <td>${i.batch}</td>
+                        <td>${i.supplier}</td>
+                        <td>${i.expiry}</td>
+                        <td>${i.qty} ${i.qty < 10 ? '<span class="badge-low">Low</span>' : ''}</td>
+                        <td>₹${i.price.toFixed(2)}</td>
+                        <td>₹${i.wholesalePrice.toFixed(2)}</td>
+                        <td><b>${statusText}</b></td>
+                        <td><button onclick="deleteMedicine(${i.id})" style="background:#e74c3c;color:#fff;border:none;padding:5px 10px;border-radius:4px;cursor:pointer;">Delete</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterInventory() {
+            let query = document.getElementById('searchInventoryInput').value.toLowerCase();
+            let filtered = db.inventory.filter(i => i.name.toLowerCase().includes(query) || i.salt.toLowerCase().includes(query));
+            renderInventoryTable(filtered);
         }
 
         let currentCart = [];
         function updatePosDropdown() {
             let sel = document.getElementById('posMedSelect');
-            sel.innerHTML = '<option value="">-- Select --</option>';
-            db.inventory.forEach(i => { if(i.qty > 0) sel.innerHTML += `<option value="${i.id}">${i.name} (${i.qty} left)</option>`; });
+            sel.innerHTML = '<option value="">-- Choose Medicine (FEFO Sorted) --</option>';
+            let sortedInventory = [...db.inventory].sort((a, b) => new Date(a.expiry) - new Date(b.expiry));
+            
+            sortedInventory.forEach(i => { 
+                if(i.qty > 0) {
+                    sel.innerHTML += `<option value="${i.id}">${i.name} (Exp: ${i.expiry}) | Stock: ${i.qty}</option>`; 
+                }
+            });
             updatePosDetails();
         }
 
         function updatePosDetails() {
-            let item = db.inventory.find(i => i.id == document.getElementById('posMedSelect').value);
+            let itemId = document.getElementById('posMedSelect').value;
+            let item = db.inventory.find(i => i.id == itemId);
+            let mode = document.getElementById('billingMode').value;
+            
             document.getElementById('posAvailableQty').value = item ? item.qty : '';
-            document.getElementById('posPrice').value = item ? item.price : '';
+            document.getElementById('posPrice').value = item ? (mode === 'wholesale' ? item.wholesalePrice : item.price) : '';
         }
 
         function addToCart() {
             let item = db.inventory.find(i => i.id == document.getElementById('posMedSelect').value);
             let qty = parseInt(document.getElementById('posQty').value);
-            if(!item || isNaN(qty) || qty > item.qty) { alert('Invalid quantity'); return; }
-            currentCart.push({ id: item.id, name: item.name, price: item.price, qty });
+            let mode = document.getElementById('billingMode').value;
+            let activePrice = mode === 'wholesale' ? item.wholesalePrice : item.price;
+
+            if(!item || isNaN(qty) || qty > item.qty || qty <= 0) { alert('Invalid quantity or stock limit exceeded!'); return; }
+            
+            let existing = currentCart.find(c => c.id == item.id);
+            if(existing) {
+                if(existing.qty + qty > item.qty) { alert('Stock limit reached!'); return; }
+                existing.qty += qty;
+            } else {
+                currentCart.push({ id: item.id, name: item.name, price: activePrice, qty });
+            }
             renderCart();
         }
 
@@ -240,22 +397,68 @@
             let tb = document.getElementById('cartTableBody'); tb.innerHTML = ''; let gt = 0;
             currentCart.forEach((c, idx) => {
                 gt += c.qty * c.price;
-                tb.innerHTML += `<tr><td>${c.name}</td><td>${c.qty}</td><td>₹${c.price}</td><td>₹${c.qty*c.price}</td><td><button onclick="currentCart.splice(${idx},1);renderCart();" style="background:#e74c3c;color:#fff;border:none;">X</button></td></tr>`;
+                tb.innerHTML += `<tr><td>${c.name}</td><td>${c.qty}</td><td>₹${c.price}</td><td>₹${c.qty*c.price}</td><td><button onclick="currentCart.splice(${idx},1);renderCart();" style="background:#e74c3c;color:#fff;border:none;padding:5px 10px;border-radius:4px;cursor:pointer;">Remove</button></td></tr>`;
             });
             document.getElementById('cartGrandTotal').innerText = 'Grand Total: ₹' + gt.toFixed(2);
         }
 
         function checkoutBill() {
-            if(currentCart.length === 0) return;
+            if(currentCart.length === 0) { alert('Cart is empty!'); return; }
+            let mode = document.getElementById('billingMode').value;
+            let buyerInfo = '';
+            
+            if(mode === 'wholesale') {
+                let firm = document.getElementById('posPartyName').value.trim() || 'Wholesale Buyer';
+                let gstin = document.getElementById('posPartyGstin').value.trim() || 'Unregistered';
+                buyerInfo = `Wholesale: ${firm} [GSTIN: ${gstin}]`;
+            } else {
+                let cust = document.getElementById('posCustomerName').value.trim() || 'Retail Customer';
+                buyerInfo = `Retail: ${cust}`;
+            }
+
             let gt = currentCart.reduce((sum, c) => sum + (c.price * c.qty), 0);
+            let invoiceId = 'INV-' + Math.floor(100000 + Math.random() * 900000);
+            let dateStr = new Date().toLocaleString();
+
             currentCart.forEach(c => { let inv = db.inventory.find(i => i.id == c.id); if(inv) inv.qty -= c.qty; });
-            db.sales.push({ id: 'INV-' + Math.floor(1000+Math.random()*9000), date: new Date().toLocaleString(), items: [...currentCart], total: gt });
-            saveData(); alert('Bill Done!'); currentCart = []; renderCart(); refreshDashboard();
+            
+            db.sales.push({ id: invoiceId, mode: mode.toUpperCase(), buyer: buyerInfo, date: dateStr, items: [...currentCart], total: gt });
+            saveData();
+
+            document.getElementById('invStoreHeader').innerText = db.currentSession.store + ` - ${mode.toUpperCase()} Tax Invoice`;
+            document.getElementById('invMetaInfo').innerText = `Invoice ID: ${invoiceId} | Buyer: ${buyerInfo} | Date: ${dateStr}`;
+            let receiptBody = document.getElementById('invReceiptItemsBody');
+            receiptBody.innerHTML = '';
+            currentCart.forEach(c => {
+                receiptBody.innerHTML += `<tr><td>${c.name}</td><td>${c.qty}</td><td>₹${c.price}</td><td>₹${c.qty * c.price}</td></tr>`;
+            });
+            
+            let cgst = (gt * 0.025).toFixed(2);
+            let sgst = cgst;
+            document.getElementById('taxBreakupBox').innerHTML = `<b>GST Summary:</b> CGST (2.5%): ₹${cgst} | SGST (2.5%): ₹${sgst} | Total Tax: ₹${(cgst*2).toFixed(2)}`;
+            document.getElementById('invReceiptTotal').innerText = 'Grand Total: ₹' + gt.toFixed(2);
+            document.getElementById('invoiceReceiptBox').style.display = 'block';
+
+            alert('Invoice Generated Successfully!');
+            currentCart = [];
+            document.getElementById('posCustomerName').value = '';
+            document.getElementById('posPartyName').value = '';
+            document.getElementById('posPartyGstin').value = '';
+            renderCart();
+            refreshDashboard();
         }
 
-        function updateSalesHistory() {
+        function renderSalesHistory(salesList) {
             let tb = document.getElementById('salesTableBody'); tb.innerHTML = '';
-            db.sales.slice().reverse().forEach(s => tb.innerHTML += `<tr><td>${s.id}</td><td>${s.date}</td><td>${s.items.length} items</td><td>₹${s.total}</td></tr>`);
+            salesList.slice().reverse().forEach(s => {
+                tb.innerHTML += `<tr><td><b>${s.id}</b></td><td><span style="background:${s.mode==='WHOLESALE'?'#2980b9':'#27ae60'};color:#fff;padding:3px 6px;border-radius:4px;font-size:11px;">${s.mode}</span></td><td>${s.buyer}</td><td>${s.date}</td><td>₹${s.total.toFixed(2)}</td></tr>`;
+            });
+        }
+
+        function filterSales() {
+            let query = document.getElementById('searchSalesInput').value.toLowerCase();
+            let filtered = db.sales.filter(s => s.id.toLowerCase().includes(query) || s.buyer.toLowerCase().includes(query));
+            renderSalesHistory(filtered);
         }
 
         checkSession();
