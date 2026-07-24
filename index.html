@@ -7,46 +7,46 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f0f2f5; padding: 15px; color: #333; }
-        .container { max-width: 1100px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .container { max-width: 1160px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         h2, h3 { color: #1abc9c; text-align: center; margin-bottom: 15px; }
-        
+
         /* Auth Screens */
-        .auth-wrapper { max-width: 400px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .auth-wrapper { max-width: 480px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #555; }
         input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
-        button.action-btn { background-color: #1abc9c; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; transition: 0.2s; }
-        button.action-btn:hover { background-color: #16a085; }
+        .action-btn { background-color: #1abc9c; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 10px; }
+        .action-btn:hover { background-color: #16a085; }
         .switch-link { text-align: center; margin-top: 15px; font-size: 14px; }
-        .switch-link a { color: #1abc9c; cursor: pointer; text-decoration: underline; }
+        .switch-link a { color: #1abc9c; cursor: pointer; text-decoration: underline; font-weight: bold; }
 
         /* Dashboard layout */
         #appDashboard { display: none; }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-bottom: 15px; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-bottom: 20px; }
         .logout-btn { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        
+
         .dashboard-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 5px solid #1abc9c; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .stat-card { background: #fdf9fa; padding: 15px; border-radius: 8px; border-left: 5px solid #1abc9c; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .stat-card h4 { font-size: 13px; color: #7f8c8d; }
         .stat-card p { font-size: 18px; font-weight: bold; color: #2c3e50; margin-top: 5px; }
-        
+
         .tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; flex-wrap: wrap; }
-        .tab-btn { background: #bdc3c7; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; font-size: 13px; }
+        .tab-btn { background: #bdc3c7; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #fff; }
         .tab-btn.active { background: #1abc9c; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        
+
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
         .table-container { overflow-x: auto; margin-top: 15px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
         th, td { border: 1px solid #e0e0e0; padding: 10px; text-align: left; }
         th { background-color: #2c3e50; color: white; }
         tr:nth-child(even) { background-color: #f9f9f9; }
-        
+
         .expired { background-color: #ffcccc !important; }
         .near-expiry { background-color: #ffe6cc !important; }
-        .badge-low { background: #e74c3c; color: white; padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-left: 5px; }
-        
+        .badge-low { background: #e74c3c; color: white; padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+
         .invoice-box { background: #fff; padding: 20px; border: 1px dashed #aaa; margin-top: 20px; border-radius: 5px; }
         .print-btn { background: #3498db; margin-top: 10px; }
         @media(max-width: 600px) { body { padding: 5px; } .container { padding: 10px; } }
@@ -56,8 +56,9 @@
 
     <!-- AUTH SECTION -->
     <div id="authSection" class="auth-wrapper">
-        <h2 id="authTitle">MediStore Pro Login</h2>
+        <!-- Login Form -->
         <div id="loginFormContainer">
+            <h2>MediStore Pro Login</h2>
             <div class="form-group">
                 <label>Email / Username:</label>
                 <input type="text" id="loginEmail" placeholder="Enter your email">
@@ -67,16 +68,30 @@
                 <input type="password" id="loginPass" placeholder="Enter password">
             </div>
             <button class="action-btn" onclick="handleLogin()">Login to Store</button>
-            <div class="switch-link">New user? <a onclick="toggleAuth(true)">Register New Store</a></div>
+            <div class="switch-link">New user? <a onclick="toggleAuth('register')">Register New Store</a></div>
         </div>
 
+        <!-- Register Form -->
         <div id="registerFormContainer" style="display: none;">
-            <div class="form-group"><label>Store Name:</label><input type="text" id="regStoreName" placeholder="City Medical Store"></div>
-            <div class="form-group"><label>Owner Name:</label><input type="text" id="regOwner" placeholder="Your Name"></div>
-            <div class="form-group"><label>Email:</label><input type="text" id="regEmail" placeholder="Unique email"></div>
-            <div class="form-group"><label>Password:</label><input type="password" id="regPass" placeholder="Password"></div>
+            <h2>Register New Medical Store</h2>
+            <div class="form-group">
+                <label>Store Name:</label>
+                <input type="text" id="regStoreName" placeholder="City Medical Store">
+            </div>
+            <div class="form-group">
+                <label>Owner Name:</label>
+                <input type="text" id="regOwner" placeholder="Your Name">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="text" id="regEmail" placeholder="Unique email">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="regPass" placeholder="Password">
+            </div>
             <button class="action-btn" onclick="handleRegister()">Register & Start</button>
-            <div class="switch-link">Already registered? <a onclick="toggleAuth(false)">Login Here</a></div>
+            <div class="switch-link">Already registered? <a onclick="toggleAuth('login')">Login Here</a></div>
         </div>
     </div>
 
@@ -84,100 +99,105 @@
     <div id="appDashboard" class="container">
         <div class="header-bar">
             <div>
-                <h2 id="storeTitleDisplay" style="text-align: left; margin:0;">Store Name</h2>
-                <small id="ownerDisplay" style="color: #666;"></small>
+                <h2 id="storeTitle" style="text-align: left; margin: 0;">Store Dashboard</h2>
+                <small id="ownerTitle" style="color: #666;"></small>
             </div>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
+        <!-- Stats Overview -->
         <div class="dashboard-stats">
-            <div class="stat-card"><h4>Total Stock Items</h4><p id="statTotalItems">0</p></div>
-            <div class="stat-card"><h4>Inventory Value</h4><p id="statStockValue">₹0</p></div>
-            <div class="stat-card" style="border-left-color: #e74c3c;"><h4>Expired Alerts</h4><p id="statAlerts">0</p></div>
-            <div class="stat-card" style="border-left-color: #3498db;"><h4>Total Sales Revenue</h4><p id="statRevenue">₹0</p></div>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('inventoryTab', this)">📦 Inventory</button>
-            <button class="tab-btn" onclick="switchTab('billingTab', this)">🧾 POS & Billing</button>
-            <button class="tab-btn" onclick="switchTab('addTab', this)">➕ Add Medicine</button>
-            <button class="tab-btn" onclick="switchTab('salesTab', this)">📊 Sales History</button>
-        </div>
-
-        <!-- INVENTORY TAB -->
-        <div id="inventoryTab" class="tab-content active">
-            <h3>Live Inventory & Expiry Tracking</h3>
-            <div class="form-group" style="margin-top: 10px;">
-                <input type="text" id="searchBox" placeholder="🔍 Search medicine by name..." onkeyup="searchMedicine()">
+            <div class="stat-card">
+                <h4>Total Inventory Items</h4>
+                <p id="statTotalItems">0</p>
             </div>
+            <div class="stat-card">
+                <h4>Total Stock Value</h4>
+                <p id="statStockVal">₹0</p>
+            </div>
+            <div class="stat-card">
+                <h4>Near Expiry / Expired</h4>
+                <p id="statExpiryAlert" style="color: #e74c3c;">0</p>
+            </div>
+            <div class="stat-card">
+                <h4>Today's Sales Revenue</h4>
+                <p id="statRevenue" style="color: #27ae60;">₹0</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'inventoryTab')">Inventory</button>
+            <button class="tab-btn" onclick="switchTab(event, 'posTab')">POS Billing</button>
+            <button class="tab-btn" onclick="switchTab(event, 'salesTab')">Sales History</button>
+        </div>
+
+        <!-- Tab 1: Inventory Management -->
+        <div id="inventoryTab" class="tab-content active">
+            <h3>Add / Manage Medicines</h3>
+            <div class="form-grid">
+                <div><label>Medicine Name</label><input type="text" id="medName" placeholder="Paracetamol"></div>
+                <div><label>Batch No</label><input type="text" id="medBatch" placeholder="B-102"></div>
+                <div><label>Expiry Date</label><input type="date" id="medExpiry"></div>
+                <div><label>Quantity</label><input type="number" id="medQty" placeholder="50"></div>
+                <div><label>MRP (₹)</label><input type="number" id="medPrice" placeholder="25.00"></div>
+            </div>
+            <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addMedicine()">Add to Stock</button>
+
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>Medicine Name</th>
-                            <th>Batch No</th>
-                            <th>Qty</th>
-                            <th>Price</th>
-                            <th>GST</th>
+                            <th>Batch</th>
                             <th>Expiry</th>
+                            <th>Qty</th>
+                            <th>MRP</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="stockTableBody"></tbody>
+                    <tbody id="inventoryTableBody">
+                        <!-- Dynamic items -->
+                    </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- BILLING TAB -->
-        <div id="billingTab" class="tab-content">
-            <h3>Point of Sale (POS)</h3>
+        <!-- Tab 2: POS Billing -->
+        <div id="posTab" class="tab-content">
+            <h3>POS Billing Counter</h3>
             <div class="form-grid">
-                <div class="form-group"><label>Customer Name:</label><input type="text" id="custName" placeholder="Customer Name"></div>
-                <div class="form-group"><label>Customer Mobile:</label><input type="text" id="custPhone" placeholder="Mobile Number"></div>
+                <div>
+                    <label>Select Medicine</label>
+                    <select id="posMedSelect" onchange="updatePosDetails()"></select>
+                </div>
+                <div><label>Available Stock</label><input type="text" id="posAvailableQty" disabled></div>
+                <div><label>Unit Price (₹)</label><input type="text" id="posPrice" disabled></div>
+                <div><label>Quantity to Buy</label><input type="number" id="posQty" value="1" min="1"></div>
             </div>
-            <hr style="margin: 15px 0; border:0; border-top:1px solid #ddd;">
-            <div class="form-grid">
-                <div class="form-group"><label>Select Medicine:</label><select id="billMedSelect"><option value="">-- Choose Medicine --</option></select></div>
-                <div class="form-group"><label>Quantity:</label><input type="number" id="billQty" value="1" min="1"></div>
-                <div class="form-group" style="display: flex; align-items: flex-end;"><button class="action-btn" onclick="addToBillCart()">Add to Cart</button></div>
-            </div>
+            <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addToCart()">Add to Cart</button>
 
             <div class="table-container">
+                <h4>Current Bill Cart</h4>
                 <table>
-                    <thead><tr><th>Medicine</th><th>Price</th><th>Qty</th><th>Total</th></tr></thead>
-                    <tbody id="billCartBody"></tbody>
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartTableBody"></tbody>
                 </table>
             </div>
-            <h3 id="billGrandTotal" style="text-align: right; margin-top: 15px;">Grand Total: ₹0.00</h3>
-            <button class="action-btn" onclick="checkoutOrder()" style="margin-top: 10px;">Complete Sale & Generate Bill</button>
-
-            <div id="invoiceSection" style="display: none;" class="invoice-box">
-                <h3 style="text-align:center;">--- TAX INVOICE ---</h3>
-                <p id="invStoreName" style="font-weight: bold; text-align: center;"></p>
-                <p id="invCustomerInfo"></p>
-                <hr style="margin: 10px 0;">
-                <div id="invDetailsTable"></div>
-                <button class="action-btn print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
-            </div>
+            <h3 style="text-align: right; margin-top: 15px;" id="cartGrandTotal">Grand Total: ₹0</h3>
+            <button class="action-btn" onclick="checkoutBill()">Complete & Generate Invoice</button>
         </div>
 
-        <!-- ADD MEDICINE TAB -->
-        <div id="addTab" class="tab-content">
-            <h3>Add New Medicine</h3>
-            <div class="form-grid">
-                <div class="form-group"><label>Medicine Name:</label><input type="text" id="medName" placeholder="Paracetamol 500mg"></div>
-                <div class="form-group"><label>Batch Number:</label><input type="text" id="medBatch" placeholder="BATCH102"></div>
-                <div class="form-group"><label>Quantity:</label><input type="number" id="medQty" placeholder="100"></div>
-                <div class="form-group"><label>Unit Price (₹):</label><input type="number" id="medPrice" placeholder="20"></div>
-                <div class="form-group"><label>GST Rate (%):</label>
-                    <select id="medGst"><option value="0">0%</option><option value="5" selected>5%</option><option value="12">12%</option><option value="18">18%</option></select>
-                </div>
-                <div class="form-group"><label>Expiry Date:</label><input type="date" id="medExpiry"></div>
-            </div>
-            <button class="action-btn" onclick="addMedicine()">Save Medicine</button>
-        </div>
-
-        <!-- SALES HISTORY TAB -->
+        <!-- Tab 3: Sales History -->
         <div id="salesTab" class="tab-content">
             <h3>Sales & Transaction History</h3>
             <div class="table-container">
@@ -185,203 +205,303 @@
                     <thead>
                         <tr>
                             <th>Invoice ID</th>
-                            <th>Customer</th>
-                            <th>Mobile</th>
-                            <th>Total Amount (₹)</th>
                             <th>Date / Time</th>
+                            <th>Items Count</th>
+                            <th>Total Amount</th>
                         </tr>
                     </thead>
-                    <tbody id="salesHistoryBody"></tbody>
+                    <tbody id="salesTableBody"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-<script>
-    let currentUser = JSON.parse(localStorage.getItem('mediActiveUser')) || null;
-    let currentCart = [];
+    <script>
+        let db = JSON.parse(localStorage.getItem('mediStoreDB')) || { users: [], currentSession: null, inventory: [], sales: [] };
 
-    if(currentUser) { showDashboard(); }
-
-    function toggleAuth(isRegister) {
-        document.getElementById('authTitle').innerText = isRegister ? "Register New Store" : "MediStore Pro Login";
-        document.getElementById('loginFormContainer').style.display = isRegister ? 'none' : 'block';
-        document.getElementById('registerFormContainer').style.display = isRegister ? 'block' : 'none';
-    }
-
-    function handleRegister() {
-        let storeName = document.getElementById('regStoreName').value.trim();
-        let owner = document.getElementById('regOwner').value.trim();
-        let email = document.getElementById('regEmail').value.trim().toLowerCase();
-        let pass = document.getElementById('regPass').value.trim();
-
-        if(!storeName || !owner || !email || !pass) { alert('Sabhi fields bharein!'); return; }
-        let users = JSON.parse(localStorage.getItem('mediUsersDB')) || {};
-        if(users[email]) { alert('Email pehle se registered hai!'); return; }
-
-        users[email] = { storeName, owner, pass };
-        localStorage.setItem('mediUsersDB', JSON.stringify(users));
-        alert('Registration Successful! Login karein.');
-        toggleAuth(false);
-    }
-
-    function handleLogin() {
-        let email = document.getElementById('loginEmail').value.trim().toLowerCase();
-        let pass = document.getElementById('loginPass').value.trim();
-        let users = JSON.parse(localStorage.getItem('mediUsersDB')) || {};
-        if(!users[email] || users[email].pass !== pass) { alert('Galat Email ya Password!'); return; }
-
-        currentUser = { email, ...users[email] };
-        localStorage.setItem('mediActiveUser', JSON.stringify(currentUser));
-        showDashboard();
-    }
-
-    function handleLogout() {
-        localStorage.removeItem('mediActiveUser');
-        currentUser = null;
-        document.getElementById('appDashboard').style.display = 'none';
-        document.getElementById('authSection').style.display = 'block';
-    }
-
-    function showDashboard() {
-        document.getElementById('authSection').style.display = 'none';
-        document.getElementById('appDashboard').style.display = 'block';
-        document.getElementById('storeTitleDisplay').innerText = currentUser.storeName;
-        document.getElementById('ownerDisplay').innerText = 'Owner: ' + currentUser.owner;
-        initApp();
-    }
-
-    function getStockKey() { return 'medicalStock_' + currentUser.email; }
-    function getSalesKey() { return 'medicalSales_' + currentUser.email; }
-
-    function getStock() { return JSON.parse(localStorage.getItem(getStockKey())) || []; }
-    function setStock(data) { localStorage.setItem(getStockKey(), JSON.stringify(data)); }
-    function getSales() { return JSON.parse(localStorage.getItem(getSalesKey())) || []; }
-    function setSales(data) { localStorage.setItem(getSalesKey(), JSON.stringify(data)); }
-
-    function initApp() {
-        let stock = getStock();
-        let sales = getSales();
-        updateDashboard(stock, sales);
-        displayStock(stock);
-        updateBillingDropdown(stock);
-        displaySalesHistory(sales);
-    }
-
-    function switchTab(tabId, btn) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        btn.classList.add('active');
-    }
-
-    function addMedicine() {
-        let name = document.getElementById('medName').value.trim();
-        let batch = document.getElementById('medBatch').value.trim();
-        let qty = parseInt(document.getElementById('medQty').value);
-        let price = parseFloat(document.getElementById('medPrice').value);
-        let gst = parseFloat(document.getElementById('medGst').value);
-        let expiry = document.getElementById('medExpiry').value;
-
-        if(!name || !batch || isNaN(qty) || isNaN(price) || !expiry) { alert('Sabhi fields bharein!'); return; }
-
-        let stock = getStock();
-        stock.push({ name, batch, qty, price, gst, expiry });
-        setStock(stock);
-        
-        document.getElementById('medName').value = '';
-        document.getElementById('medBatch').value = '';
-        document.getElementById('medQty').value = '';
-        document.getElementById('medPrice').value = '';
-        document.getElementById('medExpiry').value = '';
-
-        initApp();
-        alert('Medicine added successfully!');
-        switchTab('inventoryTab', document.querySelectorAll('.tab-btn')[0]);
-    }
-
-    function deleteMedicine(index) {
-        if(confirm('Delete karna chahte hain?')) {
-            let stock = getStock();
-            stock.splice(index, 1);
-            setStock(stock);
-            initApp();
+        function saveData() {
+            localStorage.setItem('mediStoreDB', JSON.stringify(db));
         }
-    }
 
-    function displayStock(dataArray) {
-        let tbody = document.getElementById('stockTableBody');
-        tbody.innerHTML = '';
-        if(dataArray.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No records found</td></tr>`; return; }
+        function toggleAuth(mode) {
+            if(mode === 'register') {
+                document.getElementById('loginFormContainer').style.display = 'none';
+                document.getElementById('registerFormContainer').style.display = 'block';
+            } else {
+                document.getElementById('registerFormContainer').style.display = 'none';
+                document.getElementById('loginFormContainer').style.display = 'block';
+            }
+        }
 
-        let today = new Date().toISOString().split('T')[0];
-        dataArray.forEach((item, index) => {
-            let rowClass = '';
-            if(item.expiry < today) { rowClass = 'expired'; }
-            else {
-                let diffDays = Math.ceil((new Date(item.expiry) - new Date()) / (1000 * 60 * 60 * 24));
-                if(diffDays <= 30) rowClass = 'near-expiry';
+        function handleRegister() {
+            let store = document.getElementById('regStoreName').value.trim();
+            let owner = document.getElementById('regOwner').value.trim();
+            let email = document.getElementById('regEmail').value.trim();
+            let pass = document.getElementById('regPass').value.trim();
+
+            if(!store || !owner || !email || !pass) {
+                alert('Please fill all fields!');
+                return;
             }
 
-            let lowStockBadge = item.qty < 10 ? `<span class="badge-low">Low Stock</span>` : '';
+            db.users.push({ store, owner, email, pass });
+            saveData();
+            alert('Registration Successful! Please login.');
+            toggleAuth('login');
+        }
 
-            let row = `<tr class="${rowClass}">
-                <td>${item.name} ${lowStockBadge}</td>
-                <td>${item.batch}</td>
-                <td>${item.qty}</td>
-                <td>₹${item.price}</td>
-                <td>${item.gst}%</td>
-                <td>${item.expiry}</td>
-                <td><button onclick="deleteMedicine(${index})" style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">Delete</button></td>
-            </tr>`;
-            tbody.innerHTML += row;
-        });
-    }
+        function handleLogin() {
+            let email = document.getElementById('loginEmail').value.trim();
+            let pass = document.getElementById('loginPass').value.trim();
 
-    function searchMedicine() {
-        let query = document.getElementById('searchBox').value.toLowerCase();
-        let filtered = getStock().filter(item => item.name.toLowerCase().includes(query));
-        displayStock(filtered);
-    }
-
-    function updateBillingDropdown(stock) {
-        let select = document.getElementById('billMedSelect');
-        select.innerHTML = '<option value="">-- Choose Medicine --</option>';
-        stock.forEach((item, index) => {
-            if(item.qty > 0) {
-                select.innerHTML += `<option value="${index}">${item.name} (Stock: ${item.qty}) - ₹${item.price}</option>`;
+            let found = db.users.find(u => u.email === email && u.pass === pass);
+            if(found) {
+                db.currentSession = found;
+                saveData();
+                checkSession();
+            } else {
+                alert('Invalid Credentials!');
             }
-        });
-    }
+        }
 
-    function addToBillCart() {
-        let index = document.getElementById('billMedSelect').value;
-        let qty = parseInt(document.getElementById('billQty').value);
-        if(index === "" || isNaN(qty) || qty <= 0) { alert('Sahi quantity chuniye!'); return; }
+        function handleLogout() {
+            db.currentSession = null;
+            saveData();
+            checkSession();
+        }
 
-        let stock = getStock();
-        let med = stock[index];
-        if(med.qty < qty) { alert('Stock mein sirf ' + med.qty + ' units bache hain!'); return; }
+        function checkSession() {
+            if(db.currentSession) {
+                document.getElementById('authSection').style.display = 'none';
+                document.getElementById('appDashboard').style.display = 'block';
+                document.getElementById('storeTitle').innerText = db.currentSession.store;
+                document.getElementById('ownerTitle').innerText = 'Managed by: ' + db.currentSession.owner;
+                refreshDashboard();
+            } else {
+                document.getElementById('authSection').style.display = 'block';
+                document.getElementById('appDashboard').style.display = 'none';
+            }
+        }
 
-        currentCart.push({
-            stockIndex: index, name: med.name, price: med.price, gst: med.gst, qty: qty,
-            total: (med.price * qty) * (1 + med.gst/100)
-        });
-        renderCart();
-    }
+        function switchTab(evt, tabId) {
+            let contents = document.getElementsByClassName('tab-content');
+            for(let c of contents) c.classList.remove('active');
+            let buttons = document.getElementsByClassName('tab-btn');
+            for(let b of buttons) b.classList.remove('active');
 
-    function renderCart() {
-        let tbody = document.getElementById('billCartBody');
-        tbody.innerHTML = '';
-        let grandTotal = 0;
-        currentCart.forEach(item => {
-            grandTotal += item.total;
-            tbody.innerHTML += `<tr><td>${item.name}</td><td>₹${item.price} (+${item.gst}%)</td><td>${item.qty}</td><td>₹${item.total.toFixed(2)}</td></tr>`;
-        });
-        document.getElementById('billGrandTotal').innerText = 'Grand Total: ₹' + grandTotal.toFixed(2);
-    }
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
 
-    function checkoutOrder() {
-        if(currentCart.length === 0) { alert('Cart khali hai!'); return; }
-        let custName = document.getElementById('custName').value || 'Walk-in Customer';
-        let custPhone = document.getElementById('custPhone').val
+        // Inventory Logic
+        function addMedicine() {
+            let name = document.getElementById('medName').value.trim();
+            let batch = document.getElementById('medBatch').value.trim();
+            let expiry = document.getElementById('medExpiry').value;
+            let qty = parseInt(document.getElementById('medQty').value);
+            let price = parseFloat(document.getElementById('medPrice').value);
+
+            if(!name || !batch || !expiry || isNaN(qty) || isNaN(price)) {
+                alert('Please fill correct inventory details!');
+                return;
+            }
+
+            db.inventory.push({ id: Date.now(), name, batch, expiry, qty, price });
+            saveData();
+            refreshDashboard();
+            
+            // clear inputs
+            document.getElementById('medName').value = '';
+            document.getElementById('medBatch').value = '';
+            document.getElementById('medExpiry').value = '';
+            document.getElementById('medQty').value = '';
+            document.getElementById('medPrice').value = '';
+        }
+
+        function deleteMedicine(id) {
+            db.inventory = db.inventory.filter(item => item.id !== id);
+            saveData();
+            refreshDashboard();
+        }
+
+        function refreshDashboard() {
+            let invBody = document.getElementById('inventoryTableBody');
+            invBody.innerHTML = '';
+
+            let totalItems = 0;
+            let totalVal = 0;
+            let expiryAlerts = 0;
+            let todayRev = 0;
+
+            let today = new Date().toISOString().split('T')[0];
+
+            db.inventory.forEach(item => {
+                totalItems += item.qty;
+                totalVal += (item.qty * item.price);
+
+                let statusText = 'Safe';
+                let statusClass = '';
+
+                if(item.expiry < today) {
+                    statusText = 'Expired';
+                    statusClass = 'expired';
+                    expiryAlerts++;
+                } else if(item.expiry < new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0]) {
+                    statusText = 'Near Expiry';
+                    statusClass = 'near-expiry';
+                    expiryAlerts++;
+                }
+
+                invBody.innerHTML += `
+                    <tr class="${statusClass}">
+                        <td>${item.name}</td>
+                        <td>${item.batch}</td>
+                        <td>${item.expiry}</td>
+                        <td>${item.qty} ${item.qty < 10 ? '<span class="badge-low">Low</span>' : ''}</td>
+                        <td>₹${item.price.toFixed(2)}</td>
+                        <td><b>${statusText}</b></td>
+                        <td><button onclick="deleteMedicine(${item.id})" style="background:#e74c3c; color:#fff; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">Delete</button></td>
+                    </tr>
+                `;
+            });
+
+            // Calculate revenue
+            db.sales.forEach(s => {
+                let sDate = s.date.split(',')[0];
+                todayRev += s.total;
+            });
+
+            document.getElementById('statTotalItems').innerText = totalItems;
+            document.getElementById('statStockVal').innerText = '₹' + totalVal.toFixed(2);
+            document.getElementById('statExpiryAlert').innerText = expiryAlerts;
+            document.getElementById('statRevenue').innerText = '₹' + todayRev.toFixed(2);
+
+            updatePosDropdown();
+            updateSalesHistory();
+        }
+
+        // POS Logic
+        let currentCart = [];
+
+        function updatePosDropdown() {
+            let select = document.getElementById('posMedSelect');
+            select.innerHTML = '<option value="">-- Choose Medicine --</option>';
+            db.inventory.forEach(item => {
+                if(item.qty > 0) {
+                    select.innerHTML += `<option value="${item.id}">${item.name} (Batch: ${item.batch}) - Stock: ${item.qty}</option>`;
+                }
+            });
+            updatePosDetails();
+        }
+
+        function updatePosDetails() {
+            let id = document.getElementById('posMedSelect').value;
+            let item = db.inventory.find(i => i.id == id);
+            if(item) {
+                document.getElementById('posAvailableQty').value = item.qty;
+                document.getElementById('posPrice').value = item.price;
+            } else {
+                document.getElementById('posAvailableQty').value = '';
+                document.getElementById('posPrice').value = '';
+            }
+        }
+
+        function addToCart() {
+            let id = document.getElementById('posMedSelect').value;
+            let qty = parseInt(document.getElementById('posQty').value);
+            let item = db.inventory.find(i => i.id == id);
+
+            if(!item || isNaN(qty) || qty <= 0) {
+                alert('Select valid medicine and quantity!');
+                return;
+            }
+
+            if(qty > item.qty) {
+                alert('Requested quantity exceeds current stock!');
+                return;
+            }
+
+            let cartItem = currentCart.find(c => c.id == id);
+            if(cartItem) {
+                if(cartItem.qty + qty > item.qty) {
+                    alert('Exceeds available stock limit!');
+                    return;
+                }
+                cartItem.qty += qty;
+            } else {
+                currentCart.push({ id: item.id, name: item.name, price: item.price, qty: qty });
+            }
+
+            renderCart();
+        }
+
+        function renderCart() {
+            let tbody = document.getElementById('cartTableBody');
+            tbody.innerHTML = '';
+            let grandTotal = 0;
+
+            currentCart.forEach((c, index) => {
+                let total = c.qty * c.price;
+                grandTotal += total;
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${c.name}</td>
+                        <td>${c.qty}</td>
+                        <td>₹${c.price}</td>
+                        <td>₹${total.toFixed(2)}</td>
+                        <td><button onclick="currentCart.splice(${index},1); renderCart();" style="background:#e74c3c; color:#fff; border:none; padding:3px 8px; border-radius:3px; cursor:pointer;">Remove</button></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('cartGrandTotal').innerText = 'Grand Total: ₹' + grandTotal.toFixed(2);
+        }
+
+        function checkoutBill() {
+            if(currentCart.length === 0) {
+                alert('Cart is empty!');
+                return;
+            }
+
+            let grandTotal = currentCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            // Deduct stock
+            currentCart.forEach(c => {
+                let inv = db.inventory.find(i => i.id == c.id);
+                if(inv) inv.qty -= c.qty;
+            });
+
+            db.sales.push({
+                id: 'INV-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toLocaleString(),
+                items: [...currentCart],
+                total: grandTotal
+            });
+
+            saveData();
+            alert('Bill Generated Successfully!');
+            currentCart = [];
+            renderCart();
+            refreshDashboard();
+        }
+
+        function updateSalesHistory() {
+            let tbody = document.getElementById('salesTableBody');
+            tbody.innerHTML = '';
+            db.sales.slice().reverse().forEach(s => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>${s.id}</b></td>
+                        <td>${s.date}</td>
+                        <td>${s.items.reduce((acc, cur) => acc + cur.qty, 0)} items</td>
+                        <td>₹${s.total.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Initialize App State
+        checkSession();
+    </script>
+</body>
+</html>
