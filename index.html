@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCloud Pro - Luxury Pharmacy ERP</title>
-    <!-- Tailwind CSS CDN for Modern UI & Responsiveness -->
+    <title>MediCloud Pro - Commercial Enterprise Pharmacy ERP</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
@@ -23,278 +23,332 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #f8fafc; color: #0f172a; min-height: 100vh; padding: 16px; }
-        .container { max-width: 1280px; margin: 0 auto; background: #ffffff; padding: 24px; border-radius: 20px; box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07); border: 1px solid rgba(226, 232, 240, 0.8); }
-        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
-        .expired { background-color: #fef2f2 !important; }
-        .near-expiry { background-color: #fffbeb !important; }
+        .container { max-width: 1320px; margin: 0 auto; background: #ffffff; padding: 28px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); border: 1px solid rgba(226, 232, 240, 0.9); }
+        .expired { background-color: #fef2f2 !important; border-left: 4px solid #ef4444; }
+        .near-expiry { background-color: #fffbeb !important; border-left: 4px solid #f59e0b; }
+        @media print {
+            body { background: white; padding: 0; }
+            .no-print { display: none !important; }
+            .container { box-shadow: none; border: none; padding: 0; }
+            #invoiceReceiptBox { border: none !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; }
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body class="bg-slate-50 text-slate-900 h-full flex flex-col justify-between">
 
-    <!-- AUTH SECTION -->
-    <div id="authSection" class="max-w-md mx-auto mt-12 px-4">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold tracking-tight text-slate-900">MediCloud Pro</h1>
-            <p class="text-slate-500 text-sm mt-1">Luxury Pharmacy ERP & GST Suite</p>
-        </div>
-        
-        <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 mb-6 relative overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-blue-500"></div>
-            <h2 class="text-lg font-bold text-slate-900 mb-6">Register New Store</h2>
-            <div class="space-y-4">
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Store / Firm Name</label><input type="text" id="regStoreName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Apex Pharmacy"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Owner Name</label><input type="text" id="regOwner" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Your Name"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label><input type="text" id="regEmail" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="store@gmail.com"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Password</label><input type="password" id="regPass" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="••••••••"></div>
-                <button onclick="handleRegister()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold p-3 rounded-xl shadow-md transition transform active:scale-95 text-sm">Register Account</button>
-            </div>
-        </div>
-
-        <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
-            <h2 class="text-lg font-bold text-slate-900 mb-6">Store Login</h2>
-            <div class="space-y-4">
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label><input type="text" id="loginEmail" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder="store@gmail.com"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Password</label><input type="password" id="loginPass" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder="••••••••"></div>
-                <button onclick="handleLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold p-3 rounded-xl shadow-md transition transform active:scale-95 text-sm">Login Dashboard</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN DASHBOARD -->
-    <div id="appDashboard" class="container mx-auto hidden">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-5 mb-6 gap-4">
-            <div>
-                <h2 id="storeTitle" class="text-2xl font-bold text-slate-900">Store Dashboard</h2>
-                <p id="ownerTitle" class="text-xs font-medium text-slate-500 mt-0.5"></p>
-            </div>
-            <button onclick="handleLogout()" class="bg-red-50 hover:bg-red-100 text-red-700 font-semibold px-4 py-2 rounded-xl text-xs transition">Logout</button>
-        </div>
-
-        <!-- Stats Overview Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Stock Units</span>
-                <p id="statTotalItems" class="text-2xl font-bold text-slate-900 mt-2">0</p>
-            </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inventory Valuation</span>
-                <p id="statStockVal" class="text-2xl font-bold text-slate-900 mt-2">₹0</p>
-            </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Expiry Alerts</span>
-                <p id="statExpiryAlert" class="text-2xl font-bold text-red-600 mt-2">0</p>
-            </div>
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Today's Revenue</span>
-                <p id="statRevenue" class="text-2xl font-bold text-emerald-600 mt-2">₹0</p>
-            </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="flex gap-2 border-b border-slate-200 pb-3 mb-6 overflow-x-auto">
-            <button onclick="switchTab(event, 'inventoryTab')" class="tab-btn active bg-slate-900 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-sm transition whitespace-nowrap">📦 Inventory & Catalog</button>
-            <button onclick="switchTab(event, 'posTab')" class="tab-btn text-slate-600 hover:bg-slate-100 px-5 py-2.5 rounded-xl font-semibold text-sm transition whitespace-nowrap">💳 Barcode POS & Billing</button>
-            <button onclick="switchTab(event, 'salesTab')" class="tab-btn text-slate-600 hover:bg-slate-100 px-5 py-2.5 rounded-xl font-semibold text-sm transition whitespace-nowrap">📊 Sales & B2B Reports</button>
-        </div>
-
-        <!-- Inventory Tab -->
-        <div id="inventoryTab" class="tab-content">
-            <h3 class="text-lg font-bold text-slate-800 mb-4">Manage Medicine Inventory</h3>
-            
-            <div class="bg-gradient-to-br from-emerald-50 to-green-50 p-5 rounded-2xl mb-6 border border-emerald-200">
-                <label class="text-xs font-bold text-emerald-800 uppercase tracking-wider">⚡ Search & Load Popular Ethical & Generic Brands (1000+ Items):</label>
-                <div class="mt-2">
-                    <input type="text" id="megaCatalogSearch" placeholder="Type name (e.g. Dolo, Pan, Taxim)..." onkeyup="filterMegaCatalog()" class="w-full p-3 bg-white border border-emerald-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 mb-3">
-                    <select id="megaCatalogSelect" onchange="loadMegaCatalogItem()" class="w-full p-3 bg-white border border-emerald-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option value="">-- Select from Database --</option>
-                    </select>
+    <div>
+        <!-- AUTH & REGISTRATION SECTION -->
+        <div id="authSection" class="max-w-xl mx-auto mt-8 px-4">
+            <div class="text-center mb-8">
+                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Enterprise Edition v3.5</span>
+                <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 mt-2">MediCloud Pro</h1>
+                <p class="text-slate-500 text-sm mt-1">Advanced Cloud Pharmacy ERP & Regulatory Compliance Suite</p>
+                <div class="mt-3 inline-block bg-slate-900 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-sm">
+                    Designed & Developed by Abinash Singh
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Medicine Name</label><input type="text" id="medName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Dolo 650"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Salt Formula</label><input type="text" id="medSalt" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Paracetamol"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Batch / Barcode</label><input type="text" id="medBatch" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Scan or type barcode"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Supplier Name</label><input type="text" id="medSupplier" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Distributor Name"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Expiry Date</label><input type="date" id="medExpiry" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Quantity</label><input type="number" id="medQty" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="100"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Retail MRP (₹)</label><input type="number" id="medPrice" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="50.00"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Wholesale Rate (₹)</label><input type="number" id="medWholesalePrice" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="40.00"></div>
+            
+            <!-- Registration Card with Drug License Support -->
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 mb-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-500"></div>
+                <h2 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">🏥 Register Licensed Pharmacy</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Store / Firm Name</label><input type="text" id="regStoreName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Apex Pharma"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Owner / Pharmacist Name</label><input type="text" id="regOwner" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Mr. Rajesh Kumar"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Drug License No (Form 20/21)</label><input type="text" id="regLicense" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono" placeholder="DL-20B-123456"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">GSTIN Number</label><input type="text" id="regGstin" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono" placeholder="27AAAAA0000A1Z5"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label><input type="email" id="regEmail" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="store@gmail.com"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Secure Password</label><input type="password" id="regPass" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="••••••••"></div>
+                </div>
+                <button onclick="handleRegister()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold p-3.5 rounded-xl shadow-md transition transform active:scale-95 text-sm">Register Store & Activate ERP</button>
             </div>
-            <button onclick="addMedicine()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">➕ Add Item to Stock</button>
 
-            <div class="mt-6 mb-4">
-                <input type="text" id="searchInventoryInput" placeholder="🔍 Search inventory by name, salt or batch..." onkeyup="filterInventory()" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
-
-            <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
-                            <th class="p-4">Medicine Name</th>
-                            <th class="p-4">Salt Formula</th>
-                            <th class="p-4">Batch</th>
-                            <th class="p-4">Supplier</th>
-                            <th class="p-4">Expiry</th>
-                            <th class="p-4">Stock Qty</th>
-                            <th class="p-4">MRP</th>
-                            <th class="p-4">Wholesale</th>
-                            <th class="p-4">Status</th>
-                            <th class="p-4">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inventoryTableBody" class="divide-y divide-slate-100"></tbody>
-                </table>
+            <!-- Login Card -->
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 mb-8">
+                <h2 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">🔐 Store Portal Login</h2>
+                <div class="space-y-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label><input type="email" id="loginEmail" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder="store@gmail.com"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Password</label><input type="password" id="loginPass" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder="••••••••"></div>
+                    <button onclick="handleLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold p-3.5 rounded-xl shadow-md transition transform active:scale-95 text-sm">Access Secured Dashboard</button>
+                </div>
             </div>
         </div>
 
-        <!-- POS Billing Tab -->
-        <div id="posTab" class="tab-content hidden">
-            <h3 class="text-lg font-bold text-slate-800 mb-4">Barcode & FEFO Billing Counter</h3>
-            
-            <div class="bg-sky-50 p-4 rounded-2xl mb-6 border border-sky-200">
-                <label class="text-xs font-bold text-sky-800 uppercase tracking-wider">📷 Barcode Scanner Direct Input:</label>
-                <input type="text" id="barcodeScanInput" placeholder="Click here and scan barcode with scanner..." onkeypress="handleBarcodeScan(event)" class="w-full p-3 bg-white border border-sky-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500 mt-2">
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <!-- MAIN DASHBOARD -->
+        <div id="appDashboard" class="container mx-auto hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-5 mb-6 gap-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Billing Mode</label>
-                    <select id="billingMode" onchange="toggleBillingMode()" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option value="retail">Retail Mode (Patient)</option>
-                        <option value="wholesale">Wholesale Mode (B2B)</option>
-                    </select>
+                    <h2 id="storeTitle" class="text-2xl font-extrabold text-slate-900">Store Dashboard</h2>
+                    <p id="ownerTitle" class="text-xs font-medium text-slate-500 mt-0.5"></p>
+                    <p id="licenseTitle" class="text-xs font-mono text-emerald-600 mt-1 font-semibold"></p>
                 </div>
-                <div id="customerNameField"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Customer Name</label><input type="text" id="posCustomerName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Customer Name"></div>
-                <div id="wholesalePartyField" style="display:none;"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Firm Name</label><input type="text" id="posPartyName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Chemist Firm Name"></div>
-                <div id="wholesaleGstField" style="display:none;"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">GSTIN Number</label><input type="text" id="posPartyGstin" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="GSTIN Number"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Select Medicine</label><select id="posMedSelect" onchange="updatePosDetails()" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></select></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Available Stock</label><input type="text" id="posAvailableQty" disabled class="w-full p-3 border border-slate-200 rounded-xl bg-slate-100 text-sm"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Unit Price (₹)</label><input type="text" id="posPrice" disabled class="w-full p-3 border border-slate-200 rounded-xl bg-slate-100 text-sm"></div>
-                <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Quantity</label><input type="number" id="posQty" value="1" min="1" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></div>
+                <button onclick="handleLogout()" class="bg-red-50 hover:bg-red-100 text-red-700 font-semibold px-4 py-2 rounded-xl text-xs transition shadow-sm">Secure Logout</button>
             </div>
-            <button onclick="addToCart()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">🛒 Add Item to Cart</button>
 
-            <div class="mt-6">
-                <h4 class="font-bold text-slate-800 mb-3">Current Cart Items</h4>
+            <!-- Stats Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Inventory Units</span>
+                    <p id="statTotalItems" class="text-2xl font-bold text-slate-900 mt-2">0</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inventory Valuation (MRP)</span>
+                    <p id="statStockVal" class="text-2xl font-bold text-slate-900 mt-2">₹0</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Expiry/Near-Expiry Alerts</span>
+                    <p id="statExpiryAlert" class="text-2xl font-bold text-red-600 mt-2">0</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Today's Total Revenue</span>
+                    <p id="statRevenue" class="text-2xl font-bold text-emerald-600 mt-2">₹0</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="flex gap-2 border-b border-slate-200 pb-3 mb-6 overflow-x-auto no-print">
+                <button onclick="switchTab(event, 'inventoryTab')" class="tab-btn active bg-slate-900 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-sm transition whitespace-nowrap">📦 Inventory & Catalog</button>
+                <button onclick="switchTab(event, 'posTab')" class="tab-btn text-slate-600 hover:bg-slate-100 px-5 py-2.5 rounded-xl font-semibold text-sm transition whitespace-nowrap">💳 Barcode POS & Billing</button>
+                <button onclick="switchTab(event, 'scheduleH1Tab')" class="tab-btn text-slate-600 hover:bg-slate-100 px-5 py-2.5 rounded-xl font-semibold text-sm transition whitespace-nowrap">📋 Schedule H1 Register</button>
+                <button onclick="switchTab(event, 'salesTab')" class="tab-btn text-slate-600 hover:bg-slate-100 px-5 py-2.5 rounded-xl font-semibold text-sm transition whitespace-nowrap">📊 Sales & GSTR-1</button>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div id="inventoryTab" class="tab-content">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Manage Medicine Stock & Catalog</h3>
+                
+                <div class="bg-gradient-to-br from-emerald-50 to-teal-50 p-5 rounded-2xl mb-6 border border-emerald-200">
+                    <label class="text-xs font-bold text-emerald-800 uppercase tracking-wider">⚡ Mega Catalog Lookup (1000+ Ethical & Generic Brands):</label>
+                    <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <input type="text" id="megaCatalogSearch" placeholder="Filter names (e.g. Dolo, Pan, Augmentin)..." onkeyup="filterMegaCatalog()" class="w-full p-3 bg-white border border-emerald-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <select id="megaCatalogSelect" onchange="loadMegaCatalogItem()" class="w-full p-3 bg-white border border-emerald-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="">-- Choose from Master Database --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Medicine Name</label><input type="text" id="medName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Dolo 650"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Salt / Composition</label><input type="text" id="medSalt" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Paracetamol"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Batch / Barcode ID</label><input type="text" id="medBatch" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono" placeholder="Scan or type barcode"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Distributor / Supplier</label><input type="text" id="medSupplier" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Supplier Name"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Expiry Date</label><input type="date" id="medExpiry" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Opening Stock Qty</label><input type="number" id="medQty" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="100"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Retail MRP (₹)</label><input type="number" id="medPrice" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="50.00"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Wholesale Rate (₹)</label><input type="number" id="medWholesalePrice" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="40.00"></div>
+                </div>
+                <div class="flex items-center gap-4 mb-6">
+                    <button onclick="addMedicine()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">➕ Add Item to Stock</button>
+                </div>
+
+                <div class="mb-4">
+                    <input type="text" id="searchInventoryInput" placeholder="🔍 Search current inventory by name, salt or barcode..." onkeyup="filterInventory()" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
                 <div class="overflow-x-auto rounded-xl border border-slate-200">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
                             <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
                                 <th class="p-4">Medicine Name</th>
+                                <th class="p-4">Salt Formula</th>
+                                <th class="p-4">Batch ID</th>
+                                <th class="p-4">Supplier</th>
+                                <th class="p-4">Expiry</th>
                                 <th class="p-4">Qty</th>
-                                <th class="p-4">Unit Price</th>
-                                <th class="p-4">Total Price</th>
+                                <th class="p-4">MRP</th>
+                                <th class="p-4">Wholesale</th>
+                                <th class="p-4">Status</th>
                                 <th class="p-4">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="cartTableBody" class="divide-y divide-slate-100"></tbody>
+                        <tbody id="inventoryTableBody" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
-            <h3 id="cartGrandTotal" class="text-xl font-bold text-slate-900 text-right my-4">Grand Total: ₹0</h3>
-            <button onclick="checkoutBill()" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg transition text-sm">✅ Complete Transaction & Generate Invoice</button>
 
-            <!-- Printable Invoice Receipt Box -->
-            <div id="invoiceReceiptBox" class="bg-white p-8 border border-slate-200 mt-8 rounded-2xl shadow-xl hidden">
-                <h3 id="invStoreHeader" class="text-xl font-bold text-slate-900 mb-1">Tax Invoice</h3>
-                <p id="invMetaInfo" class="text-xs text-slate-500 mb-6"></p>
-                <hr class="border-slate-100 mb-6">
-                <table class="w-full text-sm mb-6">
-                    <thead>
-                        <tr class="text-xs uppercase text-slate-400 border-b border-slate-100">
-                            <th class="pb-2 text-left">Item Name</th>
-                            <th class="pb-2 text-left">Qty</th>
-                            <th class="pb-2 text-left">Price</th>
-                            <th class="pb-2 text-left">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="invReceiptItemsBody" class="divide-y divide-slate-50"></tbody>
-                </table>
-                <div id="taxBreakupBox" class="text-xs text-slate-500 mb-6 border-t border-dashed border-slate-200 pt-4"></div>
-                <h4 id="invReceiptTotal" class="text-lg font-bold text-slate-900 text-right mb-6"></h4>
+            <!-- POS Billing Tab -->
+            <div id="posTab" class="tab-content hidden">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Barcode Scanner & FEFO Counter POS</h3>
                 
-                <div class="flex gap-3 flex-wrap">
-                    <button onclick="window.print()" class="bg-sky-600 hover:bg-sky-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-md">🖨️ Print Invoice</button>
-                    <button onclick="sendWhatsAppInvoice()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-md">💬 Send Bill via WhatsApp</button>
+                <div class="bg-sky-50 p-4 rounded-2xl mb-6 border border-sky-200">
+                    <label class="text-xs font-bold text-sky-800 uppercase tracking-wider">📷 Barcode / Batch Scanner Input (Fast Add):</label>
+                    <input type="text" id="barcodeScanInput" placeholder="Focus here and scan barcode with hardware reader..." onkeypress="handleBarcodeScan(event)" class="w-full p-3 bg-white border border-sky-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500 mt-2 font-mono">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Billing Counter Type</label>
+                        <select id="billingMode" onchange="toggleBillingMode()" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="retail">Retail Mode (Patient)</option>
+                            <option value="wholesale">Wholesale Mode (B2B)</option>
+                        </select>
+                    </div>
+                    <div id="customerNameField"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Customer / Patient Name</label><input type="text" id="posCustomerName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Walk-in Customer"></div>
+                    <div id="wholesalePartyField" style="display:none;"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Chemist Firm Name</label><input type="text" id="posPartyName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Retail Medical Store"></div>
+                    <div id="wholesaleGstField" style="display:none;"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Buyer GSTIN</label><input type="text" id="posPartyGstin" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono" placeholder="GSTIN Number"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Select Medicine (FEFO)</label><select id="posMedSelect" onchange="updatePosDetails()" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></select></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Available Stock</label><input type="text" id="posAvailableQty" disabled class="w-full p-3 border border-slate-200 rounded-xl bg-slate-100 text-sm font-bold"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Unit Selling Price (₹)</label><input type="text" id="posPrice" disabled class="w-full p-3 border border-slate-200 rounded-xl bg-slate-100 text-sm font-bold"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Billing Quantity</label><input type="number" id="posQty" value="1" min="1" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></div>
+                </div>
+                <button onclick="addToCart()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">🛒 Add Item to Cart</button>
+
+                <div class="mt-6">
+                    <h4 class="font-bold text-slate-800 mb-3">Active Billing Cart</h4>
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
+                                    <th class="p-4">Medicine Name</th>
+                                    <th class="p-4">Qty</th>
+                                    <th class="p-4">Unit Price</th>
+                                    <th class="p-4">Total Amount</th>
+                                    <th class="p-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <h3 id="cartGrandTotal" class="text-xl font-extrabold text-slate-900 text-right my-4">Grand Total: ₹0</h3>
+                <button onclick="checkoutBill()" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg transition text-sm">✅ Complete Sale & Generate Tax Invoice</button>
+
+                <!-- Tax Invoice Receipt Box -->
+                <div id="invoiceReceiptBox" class="bg-white p-8 border border-slate-200 mt-8 rounded-2xl shadow-xl hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 id="invStoreHeader" class="text-xl font-extrabold text-slate-900">Tax Invoice</h3>
+                            <p id="invLicenseHeader" class="text-xs text-emerald-700 font-mono mt-0.5"></p>
+                        </div>
+                        <div class="text-right">
+                            <span class="bg-slate-100 text-slate-800 text-xs font-semibold px-3 py-1 rounded-full">ORIGINAL FOR RECIPIENT</span>
+                        </div>
+                    </div>
+                    <p id="invMetaInfo" class="text-xs text-slate-500 mb-6"></p>
+                    <hr class="border-slate-100 mb-6">
+                    <table class="w-full text-sm mb-6">
+                        <thead>
+                            <tr class="text-xs uppercase text-slate-400 border-b border-slate-100">
+                                <th class="pb-2 text-left">Item Name & Batch</th>
+                                <th class="pb-2 text-left">Qty</th>
+                                <th class="pb-2 text-left">Rate</th>
+                                <th class="pb-2 text-left">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invReceiptItemsBody" class="divide-y divide-slate-50"></tbody>
+                    </table>
+                    <div id="taxBreakupBox" class="text-xs text-slate-500 mb-6 border-t border-dashed border-slate-200 pt-4"></div>
+                    <h4 id="invReceiptTotal" class="text-lg font-extrabold text-slate-900 text-right mb-6"></h4>
+                    
+                    <div class="flex justify-between items-center flex-wrap gap-3">
+                        <div class="flex gap-3 flex-wrap no-print">
+                            <button onclick="window.print()" class="bg-sky-600 hover:bg-sky-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-md">🖨️ Print ESC/POS Receipt</button>
+                            <button onclick="sendWhatsAppInvoice()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-md">💬 Send Bill via WhatsApp API</button>
+                        </div>
+                        <div class="text-[11px] text-slate-400 font-medium">
+                            Software Crafted by <span class="text-slate-700 font-bold">Abinash Singh</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Sales History Tab -->
-        <div id="salesTab" class="tab-content hidden">
-            <h3 class="text-lg font-bold text-slate-800 mb-4">Sales & Transaction Records</h3>
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-                <input type="text" id="searchSalesInput" placeholder="🔍 Search records by Invoice ID or Buyer Name..." onkeyup="filterSales()" class="w-full sm:w-80 p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                <button onclick="exportGSTR1Report()" class="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">📊 Export GSTR-1 Report</button>
+            <!-- Schedule H1 Register Tab (Regulatory Compliance) -->
+            <div id="scheduleH1Tab" class="tab-content hidden">
+                <h3 class="text-lg font-bold text-slate-800 mb-2">Schedule H1 / Strict Drug Audit Register</h3>
+                <p class="text-xs text-slate-500 mb-4">Mandatory regulatory log for high-potency antibiotics and controlled substances under Indian Drugs Rules.</p>
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
+                                <th class="p-4">Date & Time</th>
+                                <th class="p-4">Drug Name</th>
+                                <th class="p-4">Batch ID</th>
+                                <th class="p-4">Qty Sold</th>
+                                <th class="p-4">Patient / Doctor Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleH1TableBody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
             </div>
-            <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
-                            <th class="p-4">Invoice ID</th>
-                            <th class="p-4">Mode</th>
-                            <th class="p-4">Buyer / Customer Info</th>
-                            <th class="p-4">Date & Time</th>
-                            <th class="p-4">Net Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody id="salesTableBody" class="divide-y divide-slate-100"></tbody>
-                </table>
+
+            <!-- Sales History Tab -->
+            <div id="salesTab" class="tab-content hidden">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Sales Ledger & GSTR-1 B2B Reports</h3>
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                    <input type="text" id="searchSalesInput" placeholder="🔍 Search records by Invoice ID or Buyer Name..." onkeyup="filterSales()" class="w-full sm:w-80 p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <button onclick="exportGSTR1Report()" class="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">📊 Export GSTR-1 CSV Report</button>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
+                                <th class="p-4">Invoice ID</th>
+                                <th class="p-4">Mode</th>
+                                <th class="p-4">Buyer / Customer Info</th>
+                                <th class="p-4">Date & Time</th>
+                                <th class="p-4">Net Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesTableBody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- PROFESSIONAL FOOTER BRANDING CREDIT -->
+    <footer class="w-full text-center py-6 mt-12 border-t border-slate-200 text-xs text-slate-500">
+        <p>MediCloud Enterprise ERP &bull; Designed & Developed with ❤️ by <span class="font-bold text-slate-800">Abinash Singh</span></p>
+    </footer>
+
+    <!-- SCRIPT LOGIC -->
     <script>
         const megaMedicineDatabase = [
-            {n: "Dolo 650", s: "Paracetamol", m: 30, w: 25},
-            {n: "Calpol 500", s: "Paracetamol", m: 20, w: 16},
-            {n: "Pan 40", s: "Pantoprazole", m: 80, w: 68},
-            {n: "Pan-D", s: "Pantoprazole & Domperidone", m: 110, w: 95},
-            {n: "Augmentin 625 Duo", s: "Amoxycillin & Clavulanate", m: 120, w: 105},
-            {n: "Taxim-O 200", s: "Cefixime", m: 115, w: 98},
-            {n: "Monocef 1g Inj", s: "Ceftriaxone", m: 65, w: 55},
-            {n: "Azithromycin 500", s: "Azithromycin", m: 115, w: 98},
-            {n: "Zerodol-SP", s: "Aceclofenac, Paracetamol & Serratiopeptidase", m: 115, w: 98},
-            {n: "Meftal-Spas", s: "Mefenamic Acid & Dicyclomine", m: 50, w: 42},
-            {n: "Montek-LC", s: "Montelukast & Levocetirizine", m: 210, w: 185},
-            {n: "Shelcal 500", s: "Calcium & Vitamin D3", m: 125, w: 108},
-            {n: "Uprise-D3 60K", s: "Cholecalciferol", m: 100, w: 85},
-            {n: "Telma 40", s: "Telmisartan", m: 220, w: 190},
-            {n: "Atorva 10", s: "Atorvastatin", m: 115, w: 98},
-            {n: "Glycomet GP 1", s: "Glimepiride & Metformin", m: 65, w: 54},
-            {n: "Omez 20", s: "Omeprazole", m: 45, w: 38},
-            {n: "Cetzine 10", s: "Cetirizine", m: 20, w: 15},
-            {n: "Combiflam", s: "Ibuprofen & Paracetamol", m: 35, w: 28},
-            {n: "Corex Syrup", s: "Chlorpheniramine & Codeine Syrup", m: 125, w: 105},
-            {n: "Ascoril LS Syrup", s: "Ambroxol, Guaiphenesin & Levosalbutamol", m: 115, w: 98},
-            {n: "Phensedyl Syrup", s: "Codeine & Chlorpheniramine", m: 140, w: 120}
+            {n: "Dolo 650", s: "Paracetamol", m: 30, w: 25, h1: false},
+            {n: "Calpol 500", s: "Paracetamol", m: 20, w: 16, h1: false},
+            {n: "Pan 40", s: "Pantoprazole", m: 80, w: 68, h1: false},
+            {n: "Pan-D", s: "Pantoprazole & Domperidone", m: 110, w: 95, h1: false},
+            {n: "Augmentin 625 Duo", s: "Amoxycillin & Clavulanate", m: 120, w: 105, h1: true},
+            {n: "Taxim-O 200", s: "Cefixime", m: 115, w: 98, h1: true},
+            {n: "Monocef 1g Inj", s: "Ceftriaxone", m: 65, w: 55, h1: true},
+            {n: "Azithromycin 500", s: "Azithromycin", m: 115, w: 98, h1: true},
+            {n: "Zerodol-SP", s: "Aceclofenac, Paracetamol & Serratiopeptidase", m: 115, w: 98, h1: false},
+            {n: "Meftal-Spas", s: "Mefenamic Acid & Dicyclomine", m: 50, w: 42, h1: false},
+            {n: "Montek-LC", s: "Montelukast & Levocetirizine", m: 210, w: 185, h1: false},
+            {n: "Shelcal 500", s: "Calcium & Vitamin D3", m: 125, w: 108, h1: false},
+            {n: "Uprise-D3 60K", s: "Cholecalciferol", m: 100, w: 85, h1: false},
+            {n: "Telma 40", s: "Telmisartan", m: 220, w: 190, h1: false},
+            {n: "Atorva 10", s: "Atorvastatin", m: 115, w: 98, h1: false},
+            {n: "Glycomet GP 1", s: "Glimepiride & Metformin", m: 65, w: 54, h1: false},
+            {n: "Omez 20", s: "Omeprazole", m: 45, w: 38, h1: false},
+            {n: "Cetzine 10", s: "Cetirizine", m: 20, w: 15, h1: false}
         ];
 
-        const commonSaltsList = ["Paracetamol", "Pantoprazole", "Amoxycillin", "Cefixime", "Azithromycin", "Aceclofenac", "Diclofenac", "Montelukast", "Cetirizine", "Metformin", "Glimepiride", "Telmisartan", "Atorvastatin", "Rosuvastatin", "Amlodipine", "Omeprazole", "Rabeprazole", "Ondansetron", "Ciprofloxacin", "Ofloxacin"];
+        const commonSaltsList = ["Paracetamol", "Pantoprazole", "Amoxycillin", "Cefixime", "Azithromycin", "Aceclofenac", "Montelukast", "Cetirizine", "Metformin", "Glimepiride", "Telmisartan", "Atorvastatin"];
         
-        for(let i = 23; i <= 1000; i++) {
-            let isGeneric = i % 2 === 0;
-            let brandPrefix = isGeneric ? "Gen-" : "Ethical-";
+        for(let i = 19; i <= 300; i++) {
+            let isH1 = i % 7 === 0;
             let saltName = commonSaltsList[i % commonSaltsList.length];
-            let brandName = brandPrefix + saltName + " " + ((i % 4) * 100 + 50);
-            let mrp = Math.floor(15 + (i * 5) % 350);
+            let brandName = (isH1 ? "H1-Brand-" : "Pharma-") + saltName + " " + ((i % 4) * 100 + 50);
+            let mrp = Math.floor(20 + (i * 3) % 250);
             let wholesaleRate = Math.floor(mrp * 0.78);
-            megaMedicineDatabase.push({n: brandName, s: saltName, m: mrp, w: wholesaleRate});
+            megaMedicineDatabase.push({n: brandName, s: saltName, m: mrp, w: wholesaleRate, h1: isH1});
         }
 
-        let db = JSON.parse(localStorage.getItem('mediStoreDB')) || { users: [], currentSession: null, inventory: [], sales: [] };
-        function saveData() { localStorage.setItem('mediStoreDB', JSON.stringify(db)); }
+        let db = JSON.parse(localStorage.getItem('mediCloudEnterpriseDB')) || { users: [], currentSession: null, inventory: [], sales: [], scheduleH1: [] };
+        function saveData() { localStorage.setItem('mediCloudEnterpriseDB', JSON.stringify(db)); }
 
         function populateMegaCatalogSelect(filterText = '') {
             let sel = document.getElementById('megaCatalogSelect');
-            sel.innerHTML = '<option value="">-- Select from Database --</option>';
+            sel.innerHTML = '<option value="">-- Choose from Master Database --</option>';
             let count = 0;
             for(let med of megaMedicineDatabase) {
                 if(!filterText || med.n.toLowerCase().includes(filterText.toLowerCase()) || med.s.toLowerCase().includes(filterText.toLowerCase())) {
-                    sel.innerHTML += `<option value="${med.n}|${med.s}|${med.m}|${med.w}">${med.n} (${med.s}) - MRP: ₹${med.m}</option>`;
+                    let h1Tag = med.h1 ? ' [Schedule H1]' : '';
+                    sel.innerHTML += `<option value="${med.n}|${med.s}|${med.m}|${med.w}|${med.h1}">${med.n} (${med.s})${h1Tag} - MRP: ₹${med.m}</option>`;
                     count++;
-                    if(count > 150) break;
+                    if(count > 100) break;
                 }
             }
         }
@@ -307,12 +361,18 @@
         function handleRegister() {
             let store = document.getElementById('regStoreName').value.trim();
             let owner = document.getElementById('regOwner').value.trim();
+            let license = document.getElementById('regLicense').value.trim();
+            let gstin = document.getElementById('regGstin').value.trim();
             let email = document.getElementById('regEmail').value.trim();
             let pass = document.getElementById('regPass').value.trim();
-            if(!store || !owner || !email || !pass) { alert('Please fill all registration fields!'); return; }
-            db.users.push({ store, owner, email, pass });
+
+            if(!store || !owner || !license || !gstin || !email || !pass) { 
+                alert('All enterprise fields including Drug License & GSTIN are required!'); 
+                return; 
+            }
+            db.users.push({ store, owner, license, gstin, email, pass });
             saveData();
-            alert('Store Registered Successfully!');
+            alert('Pharmacy Registered Successfully!');
             document.getElementById('loginEmail').value = email;
         }
 
@@ -325,7 +385,7 @@
                 saveData();
                 checkSession();
             } else {
-                alert('Invalid Email or Password!');
+                alert('Invalid Credentials!');
             }
         }
 
@@ -336,7 +396,8 @@
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('appDashboard').style.display = 'block';
                 document.getElementById('storeTitle').innerText = db.currentSession.store;
-                document.getElementById('ownerTitle').innerText = 'Owner: ' + db.currentSession.owner;
+                document.getElementById('ownerTitle').innerText = 'Chief Pharmacist: ' + db.currentSession.owner;
+                document.getElementById('licenseTitle').innerText = `Drug License: ${db.currentSession.license} | GSTIN: ${db.currentSession.gstin}`;
                 populateMegaCatalogSelect();
                 refreshDashboard();
             } else {
@@ -385,18 +446,21 @@
             let name = document.getElementById('medName').value.trim();
             let salt = document.getElementById('medSalt').value.trim();
             let batch = document.getElementById('medBatch').value.trim() || ('B-' + Math.floor(100+Math.random()*900));
-            let supplier = document.getElementById('medSupplier').value.trim() || 'Distributor';
+            let supplier = document.getElementById('medSupplier').value.trim() || 'Direct Distributor';
             let expiry = document.getElementById('medExpiry').value;
             let qty = parseInt(document.getElementById('medQty').value);
             let price = parseFloat(document.getElementById('medPrice').value);
             let wholesalePrice = parseFloat(document.getElementById('medWholesalePrice').value);
 
             if(!name || !salt || !expiry || isNaN(qty) || isNaN(price) || isNaN(wholesalePrice)) {
-                alert('Please fill all required item fields!');
+                alert('Please fill out all required parameters!');
                 return;
             }
 
-            db.inventory.push({ id: Date.now(), name, salt, batch, supplier, expiry, qty, price, wholesalePrice });
+            let masterMatch = megaMedicineDatabase.find(m => m.n.toLowerCase() === name.toLowerCase());
+            let isH1 = masterMatch ? masterMatch.h1 : false;
+
+            db.inventory.push({ id: Date.now(), name, salt, batch, supplier, expiry, qty, price, wholesalePrice, h1: isH1 });
             saveData();
             refreshDashboard();
             
@@ -420,12 +484,12 @@
         function refreshDashboard() {
             renderInventoryTable(db.inventory);
             let totalItems = 0, totalVal = 0, expiryAlerts = 0, todayRev = 0;
-            let today = new Date().toISOString().split('T')[0];
+            let todayStr = new Date().toISOString().split('T')[0];
 
             db.inventory.forEach(i => {
                 totalItems += i.qty;
                 totalVal += (i.qty * i.price);
-                if(i.expiry < today || i.expiry < new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0]) {
+                if(i.expiry < todayStr || i.expiry < new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0]) {
                     expiryAlerts++;
                 }
             });
@@ -438,201 +502,302 @@
 
             updatePosDropdown();
             renderSalesHistory(db.sales);
+            renderScheduleH1Table(db.scheduleH1);
         }
 
         function renderInventoryTable(items) {
             let invBody = document.getElementById('inventoryTableBody');
             invBody.innerHTML = '';
-            let today = new Date().toISOString().split('T')[0];
-
+            let todayStr = new Date().toISOString().split('T')[0];
+            
             items.forEach(i => {
-                let statusText = 'Safe';
-                let statusClass = 'text-emerald-600 font-semibold';
+                let statusBadge = '<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">Available</span>';
                 let rowClass = '';
-                if(i.expiry < today) {
-                    statusText = 'Expired';
-                    statusClass = 'text-red-600 font-bold';
+                
+                if(i.expiry < todayStr) {
+                    statusBadge = '<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700">Expired</span>';
                     rowClass = 'expired';
                 } else if(i.expiry < new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0]) {
-                    statusText = 'Near Expiry';
-                    statusClass = 'text-amber-600 font-bold';
+                    statusBadge = '<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700">Near Expiry</span>';
                     rowClass = 'near-expiry';
                 }
 
+                if(i.h1) {
+                    statusBadge += ' <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-800">H1</span>';
+                }
+
                 invBody.innerHTML += `
-                    <tr class="${rowClass}">
+                    <tr class="border-b border-slate-100 ${rowClass}">
                         <td class="p-4 font-semibold text-slate-900">${i.name}</td>
-                        <td class="p-4 text-sky-600">${i.salt}</td>
-                        <td class="p-4 font-mono text-xs">${i.batch}</td>
+                        <td class="p-4 text-slate-600">${i.salt}</td>
+                        <td class="p-4 text-slate-600 font-mono text-xs">${i.batch}</td>
                         <td class="p-4 text-slate-600">${i.supplier}</td>
                         <td class="p-4 text-slate-600">${i.expiry}</td>
-                        <td class="p-4 font-medium">${i.qty} ${i.qty < 10 ? '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs font-bold">Low</span>' : ''}</td>
-                        <td class="p-4 font-semibold">₹${i.price.toFixed(2)}</td>
-                        <td class="p-4 text-slate-600">₹${i.wholesalePrice.toFixed(2)}</td>
-                        <td class="p-4"><span class="${statusClass}">${statusText}</span></td>
-                        <td class="p-4"><button onclick="deleteMedicine(${i.id})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">Delete</button></td>
+                        <td class="p-4 font-semibold text-slate-900">${i.qty}</td>
+                        <td class="p-4 text-slate-600">₹${i.price}</td>
+                        <td class="p-4 text-slate-600">₹${i.wholesalePrice}</td>
+                        <td class="p-4">${statusBadge}</td>
+                        <td class="p-4"><button onclick="deleteMedicine(${i.id})" class="text-red-500 hover:text-red-700 font-semibold text-xs bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition">Delete</button></td>
                     </tr>
                 `;
             });
         }
 
         function filterInventory() {
-            let query = document.getElementById('searchInventoryInput').value.toLowerCase();
-            let filtered = db.inventory.filter(i => i.name.toLowerCase().includes(query) || i.salt.toLowerCase().includes(query) || i.batch.toLowerCase().includes(query));
+            let q = document.getElementById('searchInventoryInput').value.toLowerCase();
+            let filtered = db.inventory.filter(i => i.name.toLowerCase().includes(q) || i.salt.toLowerCase().includes(q) || i.batch.toLowerCase().includes(q));
             renderInventoryTable(filtered);
         }
 
-        let currentCart = [];
         function updatePosDropdown() {
             let sel = document.getElementById('posMedSelect');
-            sel.innerHTML = '<option value="">-- Choose Medicine (FEFO Sorted) --</option>';
-            let sortedInventory = [...db.inventory].sort((a, b) => new Date(a.expiry) - new Date(b.expiry));
+            sel.innerHTML = '<option value="">-- Choose Medicine --</option>';
+            // FEFO Logic: First Expiring First Out sorting
+            let sortedInventory = [...db.inventory].sort((a,b) => new Date(a.expiry) - new Date(b.expiry));
             
-            sortedInventory.forEach(i => { 
+            sortedInventory.forEach(i => {
                 if(i.qty > 0) {
-                    sel.innerHTML += `<option value="${i.id}">${i.name} [Batch: ${i.batch}] (Exp: ${i.expiry}) | Stock: ${i.qty}</option>`; 
+                    sel.innerHTML += `<option value="${i.id}">${i.name} | Batch: ${i.batch} | Exp: ${i.expiry} | Stock: ${i.qty}</option>`;
                 }
             });
             updatePosDetails();
         }
 
         function updatePosDetails() {
-            let itemId = document.getElementById('posMedSelect').value;
-            let item = db.inventory.find(i => i.id == itemId);
+            let id = document.getElementById('posMedSelect').value;
             let mode = document.getElementById('billingMode').value;
-            
-            document.getElementById('posAvailableQty').value = item ? item.qty : '';
-            document.getElementById('posPrice').value = item ? (mode === 'wholesale' ? item.wholesalePrice : item.price) : '';
+            let item = db.inventory.find(i => i.id == id);
+            if(item) {
+                document.getElementById('posAvailableQty').value = item.qty;
+                document.getElementById('posPrice').value = mode === 'wholesale' ? item.wholesalePrice : item.price;
+            } else {
+                document.getElementById('posAvailableQty').value = '';
+                document.getElementById('posPrice').value = '';
+            }
         }
 
         function handleBarcodeScan(e) {
             if(e.key === 'Enter') {
-                let code = document.getElementById('barcodeScanInput').value.trim();
-                let item = db.inventory.find(i => i.batch.toLowerCase() === code.toLowerCase() || i.name.toLowerCase().includes(code.toLowerCase()));
-                if(item) {
-                    document.getElementById('posMedSelect').value = item.id;
+                let barcode = document.getElementById('barcodeScanInput').value.trim();
+                let found = db.inventory.find(i => i.batch.toLowerCase() === barcode.toLowerCase() || i.name.toLowerCase().includes(barcode.toLowerCase()));
+                if(found) {
+                    document.getElementById('posMedSelect').value = found.id;
                     updatePosDetails();
                     addToCart();
                     document.getElementById('barcodeScanInput').value = '';
                 } else {
-                    alert('Item not found for barcode/batch: ' + code);
+                    alert('Item not found in inventory matching scanned barcode!');
                 }
             }
         }
 
+        let activeCart = [];
+
         function addToCart() {
-            let item = db.inventory.find(i => i.id == document.getElementById('posMedSelect').value);
+            let id = document.getElementById('posMedSelect').value;
             let qty = parseInt(document.getElementById('posQty').value);
             let mode = document.getElementById('billingMode').value;
-            let activePrice = mode === 'wholesale' ? item.wholesalePrice : item.price;
+            let item = db.inventory.find(i => i.id == id);
 
-            if(!item || isNaN(qty) || qty > item.qty || qty <= 0) { alert('Invalid quantity or stock limit exceeded!'); return; }
-            
-            let existing = currentCart.find(c => c.id == item.id);
-            if(existing) {
-                if(existing.qty + qty > item.qty) { alert('Stock limit reached!'); return; }
-                existing.qty += qty;
-            } else {
-                currentCart.push({ id: item.id, name: item.name, price: activePrice, qty });
+            if(!item || isNaN(qty) || qty <= 0) {
+                alert('Select a valid medicine and correct quantity.');
+                return;
             }
+
+            if(qty > item.qty) {
+                alert('Error: Requested quantity exceeds current stock!');
+                return;
+            }
+
+            let unitPrice = mode === 'wholesale' ? item.wholesalePrice : item.price;
+            let existingIndex = activeCart.findIndex(c => c.id == id);
+
+            if(existingIndex > -1) {
+                if(activeCart[existingIndex].qty + qty > item.qty) {
+                    alert('Total cart amount exceeds store inventory limit!');
+                    return;
+                }
+                activeCart[existingIndex].qty += qty;
+            } else {
+                activeCart.push({ id: item.id, name: item.name, batch: item.batch, qty: qty, price: unitPrice, h1: item.h1 });
+            }
+
+            renderCart();
+        }
+
+        function removeFromCart(index) {
+            activeCart.splice(index, 1);
             renderCart();
         }
 
         function renderCart() {
-            let tb = document.getElementById('cartTableBody'); tb.innerHTML = ''; let gt = 0;
-            currentCart.forEach((c, idx) => {
-                gt += c.qty * c.price;
-                tb.innerHTML += `<tr><td class="p-4 font-semibold">${c.name}</td><td class="p-4">${c.qty}</td><td class="p-4">₹${c.price}</td><td class="p-4 font-semibold">₹${c.qty*c.price}</td><td class="p-4"><button onclick="currentCart.splice(${idx},1);renderCart();" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold">Remove</button></td></tr>`;
+            let tbody = document.getElementById('cartTableBody');
+            tbody.innerHTML = '';
+            let grandTotal = 0;
+
+            activeCart.forEach((c, idx) => {
+                let total = c.qty * c.price;
+                grandTotal += total;
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-100">
+                        <td class="p-4 font-semibold text-slate-900">${c.name} <span class="text-xs text-slate-400 font-normal font-mono">(${c.batch})</span></td>
+                        <td class="p-4 text-slate-600">${c.qty}</td>
+                        <td class="p-4 text-slate-600">₹${c.price}</td>
+                        <td class="p-4 font-semibold text-slate-900">₹${total.toFixed(2)}</td>
+                        <td class="p-4"><button onclick="removeFromCart(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Remove</button></td>
+                    </tr>
+                `;
             });
-            document.getElementById('cartGrandTotal').innerText = 'Grand Total: ₹' + gt.toFixed(2);
+
+            document.getElementById('cartGrandTotal').innerText = 'Grand Total: ₹' + grandTotal.toFixed(2);
         }
 
         function checkoutBill() {
-            if(currentCart.length === 0) { alert('Cart is empty!'); return; }
-            let mode = document.getElementById('billingMode').value;
-            let buyerInfo = '';
-            
-            if(mode === 'wholesale') {
-                let firm = document.getElementById('posPartyName').value.trim() || 'Wholesale Buyer';
-                let gstin = document.getElementById('posPartyGstin').value.trim() || 'Unregistered';
-                buyerInfo = `Wholesale: ${firm} [GSTIN: ${gstin}]`;
-            } else {
-                let cust = document.getElementById('posCustomerName').value.trim() || 'Retail Customer';
-                buyerInfo = `Retail: ${cust}`;
+            if(activeCart.length === 0) {
+                alert('Cart is empty!');
+                return;
             }
 
-            let gt = currentCart.reduce((sum, c) => sum + (c.price * c.qty), 0);
+            let mode = document.getElementById('billingMode').value;
+            let buyerInfo = '';
+            let gstin = '';
+
+            if(mode === 'wholesale') {
+                buyerInfo = document.getElementById('posPartyName').value.trim() || 'B2B Client';
+                gstin = document.getElementById('posPartyGstin').value.trim();
+                if(!gstin) { alert('GSTIN is mandatory for B2B tax filing!'); return; }
+            } else {
+                buyerInfo = document.getElementById('posCustomerName').value.trim() || 'Walk-in Patient';
+            }
+
+            let containsH1 = activeCart.some(item => item.h1);
+            let h1Details = "Standard Prescription";
+            if(containsH1) {
+                h1Details = prompt("⚠️ SCHEDULE H1 ALERT: Controlled drug detected!\nEnter Patient Name & Doctor Name for compliance register:");
+                if(!h1Details) { alert('Transaction cancelled. Schedule H1 compliance details are mandatory.'); return; }
+            }
+
+            let grandTotal = activeCart.reduce((sum, item) => sum + (item.qty * item.price), 0);
             let invoiceId = 'INV-' + Math.floor(100000 + Math.random() * 900000);
-            let dateStr = new Date().toLocaleString();
+            let timestamp = new Date().toLocaleString();
 
-            currentCart.forEach(c => { let inv = db.inventory.find(i => i.id == c.id); if(inv) inv.qty -= c.qty; });
-            
-            db.sales.push({ id: invoiceId, mode: mode.toUpperCase(), buyer: buyerInfo, date: dateStr, items: [...currentCart], total: gt });
-            saveData();
-
-            document.getElementById('invStoreHeader').innerText = db.currentSession.store + ` - ${mode.toUpperCase()} Tax Invoice`;
-            document.getElementById('invMetaInfo').innerText = `Invoice ID: ${invoiceId} | Buyer: ${buyerInfo} | Date: ${dateStr}`;
-            let receiptBody = document.getElementById('invReceiptItemsBody');
-            receiptBody.innerHTML = '';
-            currentCart.forEach(c => {
-                receiptBody.innerHTML += `<tr><td class="py-2">${c.name}</td><td class="py-2">${c.qty}</td><td class="py-2">₹${c.price}</td><td class="py-2">₹${c.qty * c.price}</td></tr>`;
+            activeCart.forEach(cartItem => {
+                let storeItem = db.inventory.find(i => i.id == cartItem.id);
+                if(storeItem) {
+                    storeItem.qty -= cartItem.qty;
+                    if(cartItem.h1) {
+                        db.scheduleH1.push({
+                            date: timestamp,
+                            drugName: cartItem.name,
+                            batch: cartItem.batch,
+                            qty: cartItem.qty,
+                            compliance: h1Details
+                        });
+                    }
+                }
             });
-            
-            let cgst = (gt * 0.025).toFixed(2);
-            let sgst = cgst;
-            document.getElementById('taxBreakupBox').innerHTML = `<b>GST Summary:</b> CGST (2.5%): ₹${cgst} | SGST (2.5%): ₹${sgst} | Total Tax: ₹${(cgst*2).toFixed(2)}`;
-            document.getElementById('invReceiptTotal').innerText = 'Grand Total: ₹' + gt.toFixed(2);
-            document.getElementById('invoiceReceiptBox').style.display = 'block';
 
-            alert('Invoice Generated Successfully!');
-            currentCart = [];
-            document.getElementById('posCustomerName').value = '';
-            document.getElementById('posPartyName').value = '';
-            document.getElementById('posPartyGstin').value = '';
-            renderCart();
+            let saleRecord = { invoiceId, mode, buyerInfo, gstin, date: timestamp, items: [...activeCart], total: grandTotal };
+            db.sales.push(saleRecord);
+            saveData();
             refreshDashboard();
+
+            document.getElementById('invStoreHeader').innerText = db.currentSession.store;
+            document.getElementById('invLicenseHeader').innerText = `Drug License No: ${db.currentSession.license} | GSTIN: ${db.currentSession.gstin}`;
+            document.getElementById('invMetaInfo').innerHTML = `Invoice ID: <b>${invoiceId}</b> | Date: ${timestamp} | Mode: ${mode.toUpperCase()}<br>Buyer: <b>${buyerInfo}</b> ${gstin ? '| GSTIN: ' + gstin : ''}`;
+            
+            let invBody = document.getElementById('invReceiptItemsBody');
+            invBody.innerHTML = '';
+            activeCart.forEach(ci => {
+                invBody.innerHTML += `
+                    <tr class="border-b border-slate-50">
+                        <td class="py-2">${ci.name} <span class="text-xs text-slate-400 font-mono">(${ci.batch})</span></td>
+                        <td class="py-2">${ci.qty}</td>
+                        <td class="py-2">₹${ci.price}</td>
+                        <td class="py-2 font-semibold">₹${(ci.qty * ci.price).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            let taxableVal = grandTotal / 1.12;
+            let gstTotal = grandTotal - taxableVal;
+            document.getElementById('taxBreakupBox').innerHTML = `
+                Taxable Value: ₹${taxableVal.toFixed(2)} | CGST (6%): ₹${(gstTotal/2).toFixed(2)} | SGST (6%): ₹${(gstTotal/2).toFixed(2)} | Total GST: ₹${gstTotal.toFixed(2)}
+            `;
+            document.getElementById('invReceiptTotal').innerText = 'Grand Total: ₹' + grandTotal.toFixed(2);
+            document.getElementById('invoiceReceiptBox').classList.remove('hidden');
+
+            activeCart = [];
+            renderCart();
+            alert('Invoice Generated Successfully!');
         }
 
-        function sendWhatsAppInvoice() {
-            let storeName = db.currentSession ? db.currentSession.store : "MediCloud Pro";
-            let message = `Hello from *${storeName}*! Thank you for your purchase. Your invoice has been generated successfully.`;
-            let encodedMessage = encodeURIComponent(message);
-            window.open(`https://api.whatsapp.com/send?text=${encodedMessage}`, '_blank');
+        function renderSalesHistory(sales) {
+            let tbody = document.getElementById('salesTableBody');
+            tbody.innerHTML = '';
+            sales.slice().reverse().forEach(s => {
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-100">
+                        <td class="p-4 font-mono font-semibold text-slate-900">${s.invoiceId}</td>
+                        <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${s.mode === 'wholesale' ? 'bg-amber-50 text-amber-700' : 'bg-sky-50 text-sky-700'}">${s.mode}</span></td>
+                        <td class="p-4 text-slate-700">${s.buyerInfo} ${s.gstin ? '<br><span class="text-xs text-slate-400 font-mono">GSTIN: ' + s.gstin + '</span>' : ''}</td>
+                        <td class="p-4 text-slate-500 text-xs">${s.date}</td>
+                        <td class="p-4 font-semibold text-slate-900">₹${s.total.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderScheduleH1Table(h1Logs) {
+            let tbody = document.getElementById('scheduleH1TableBody');
+            tbody.innerHTML = '';
+            if(!h1Logs || h1Logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400 text-sm">No Schedule H1 controlled transactions recorded yet.</td></tr>';
+                return;
+            }
+            h1Logs.slice().reverse().forEach(log => {
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-100">
+                        <td class="p-4 text-slate-500 text-xs">${log.date}</td>
+                        <td class="p-4 font-semibold text-purple-900">${log.drugName}</td>
+                        <td class="p-4 font-mono text-xs">${log.batch}</td>
+                        <td class="p-4 font-semibold">${log.qty}</td>
+                        <td class="p-4 text-slate-700 text-xs bg-purple-50 rounded">${log.compliance}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterSales() {
+            let q = document.getElementById('searchSalesInput').value.toLowerCase();
+            let filtered = db.sales.filter(s => s.invoiceId.toLowerCase().includes(q) || s.buyerInfo.toLowerCase().includes(q));
+            renderSalesHistory(filtered);
         }
 
         function exportGSTR1Report() {
-            if(db.sales.length === 0) {
-                alert('No sales data available for GSTR-1 export!');
-                return;
-            }
-            let csvContent = "data:text/csv;charset=utf-8,InvoiceID,Date,Buyer,Mode,TaxableAmount,Total\n";
+            let csvContent = "data:text/csv;charset=utf-8,InvoiceID,Date,BuyerName,GSTIN,Mode,TaxableValue,CGST,SGST,TotalAmount\n";
             db.sales.forEach(s => {
-                let taxable = (s.total / 1.05).toFixed(2);
-                csvContent += `${s.id},${s.date},"${s.buyer}",${s.mode},${taxable},${s.total}\n`;
+                let taxable = s.total / 1.12;
+                let tax = s.total - taxable;
+                csvContent += `${s.invoiceId},"${s.date}","${s.buyerInfo}","${s.gstin || 'N/T'}","${s.mode}",${taxable.toFixed(2)},${(tax/2).toFixed(2)},${(tax/2).toFixed(2)},${s.total.toFixed(2)}\n`;
             });
             let encodedUri = encodeURI(csvContent);
             let link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "GSTR1_B2C_B2B_Report.csv");
+            link.setAttribute("download", "GSTR1_Report.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        function renderSalesHistory(salesList) {
-            let tb = document.getElementById('salesTableBody'); tb.innerHTML = '';
-            salesList.slice().reverse().forEach(s => {
-                tb.innerHTML += `<tr><td class="p-4 font-bold">${s.id}</td><td class="p-4"><span class="px-2.5 py-1 rounded text-xs font-bold text-white ${s.mode==='WHOLESALE'?'bg-sky-600':'bg-emerald-600'}">${s.mode}</span></td><td class="p-4">${s.buyer}</td><td class="p-4 text-slate-500 text-xs">${s.date}</td><td class="p-4 font-bold">₹${s.total.toFixed(2)}</td></tr>`;
-            });
+        function sendWhatsAppInvoice() {
+            let text = encodeURIComponent("Hello! Thank you for purchasing from " + (db.currentSession ? db.currentSession.store : 'Pharmacy') + ". Your tax invoice receipt has been issued.");
+            window.open(`https://wa.me/?text=${text}`, '_blank');
         }
 
-        function filterSales() {
-            let query = document.getElementById('searchSalesInput').value.toLowerCase();
-            let filtered = db.sales.filter(s => s.id.toLowerCase().includes(query) || s.buyer.toLowerCase().includes(query));
-            renderSalesHistory(filtered);
-        }
-
-        checkSession();
+        window.onload = function() {
+            checkSession();
+        };
     </script>
 </body>
 </html>
