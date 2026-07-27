@@ -156,26 +156,34 @@ function applySmartFilter(filterType) {
 function switchAuthTab(type) {
   const tabClient = document.getElementById("tabClient");
   const tabDev = document.getElementById("tabDev");
+  const devField = document.getElementById("devModeField");
 
   if (type === "client") {
     STATE.userRole = "client";
-    tabClient.className = "w-1/2 py-2 text-center text-xs font-semibold rounded-lg text-white bg-brand-600 shadow-md transition-all";
-    tabDev.className = "w-1/2 py-2 text-center text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all";
-    DOM.devModeField.classList.add("hidden");
+    if (tabClient) tabClient.className = "w-1/2 py-2 text-center text-xs font-semibold rounded-lg text-white bg-brand-600 shadow-md transition-all cursor-pointer";
+    if (tabDev) tabDev.className = "w-1/2 py-2 text-center text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer";
+    if (devField) devField.classList.add("hidden");
   } else {
     STATE.userRole = "developer";
-    tabDev.className = "w-1/2 py-2 text-center text-xs font-semibold rounded-lg text-white bg-rose-600 shadow-md transition-all";
-    tabClient.className = "w-1/2 py-2 text-center text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all";
-    DOM.devModeField.classList.remove("hidden");
+    if (tabDev) tabDev.className = "w-1/2 py-2 text-center text-xs font-semibold rounded-lg text-white bg-rose-600 shadow-md transition-all cursor-pointer";
+    if (tabClient) tabClient.className = "w-1/2 py-2 text-center text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer";
+    if (devField) devField.classList.remove("hidden");
   }
 }
 
 function handleAuthSubmit(e) {
-  e.preventDefault();
-  const username = document.getElementById("authUsername").value;
-  const secret = document.getElementById("devSecret").value;
+  if (e) e.preventDefault();
 
-  if (DOM.devModeField.classList.contains("hidden")) {
+  const devField = document.getElementById("devModeField");
+  const secretInput = document.getElementById("devSecret");
+  const usernameInput = document.getElementById("authUsername");
+  
+  const username = usernameInput ? usernameInput.value : "Admin";
+  const secret = secretInput ? secretInput.value.trim() : "";
+
+  const isDevMode = devField && !devField.classList.contains("hidden");
+
+  if (!isDevMode) {
     localStorage.setItem("medistore_session", JSON.stringify({ role: "client", username }));
     launchWorkspace("client");
   } else {
@@ -183,11 +191,10 @@ function handleAuthSubmit(e) {
       localStorage.setItem("medistore_session", JSON.stringify({ role: "developer", username }));
       launchWorkspace("developer");
     } else {
-      alert("Invalid Developer Key! Access Denied.");
+      alert("❌ Invalid Developer Key!\n\nPlease enter: DEV123");
     }
   }
 }
-
 function checkSession() {
   const session = JSON.parse(localStorage.getItem("medistore_session"));
   if (session) launchWorkspace(session.role);
