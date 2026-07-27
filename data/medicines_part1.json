@@ -1,0 +1,12 @@
+[
+  { "id": "MED001", "name": "Dolo 650 Tablet", "generic": "Paracetamol 650mg", "category": "Fever / Pain", "mrp": 30.50 },
+  { "id": "MED002", "name": "Azee 500 Tablet", "generic": "Azithromycin 500mg", "category": "Antibiotic", "mrp": 118.00 },
+  { "id": "MED003", "name": "Pan 40 Tablet", "generic": "Pantoprazole 40mg", "category": "Acidity", "mrp": 155.00 },
+  { "id": "MED004", "name": "Moxikind-CV 625", "generic": "Amoxicillin + Clavulanic Acid", "category": "Antibiotic", "mrp": 204.00 },
+  { "id": "MED005", "name": "Okacet Tablet", "generic": "Cetirizine 10mg", "category": "Allergy", "mrp": 18.50 },
+  { "id": "MED006", "name": "Glycomet 500 SR", "generic": "Metformin 500mg", "category": "Diabetes", "mrp": 22.00 },
+  { "id": "MED007", "name": "Telma 40 Tablet", "generic": "Telmisartan 40mg", "category": "BP Control", "mrp": 135.00 },
+  { "id": "MED008", "name": "Electral Powder 21.8g", "generic": "ORS Salts", "category": "Rehydration", "mrp": 21.50 },
+  { "id": "MED009", "name": "Combiflam Tablet", "generic": "Ibuprofen + Paracetamol", "category": "Painkiller", "mrp": 42.00 },
+  { "id": "MED010", "name": "Monticope Tablet", "generic": "Montelukast + Levocetirizine", "category": "Anti-Allergic", "mrp": 110.00 }
+]
