@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCloud Pro - Commercial Enterprise Pharmacy ERP</title>
+    <title>MediCloud Pro - Enterprise Pharmacy ERP</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         darkMode: 'class',
@@ -38,29 +38,63 @@
 
     <div>
         <!-- AUTH & REGISTRATION SECTION -->
-        <div id="authSection" class="max-w-xl mx-auto mt-8 px-4">
-            <div class="text-center mb-8">
-                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Enterprise Edition v3.5</span>
+        <div id="authSection" class="max-w-4xl mx-auto mt-4 px-4">
+            <div class="text-center mb-6">
+                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Enterprise Edition v3.8</span>
                 <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 mt-2">MediCloud Pro</h1>
-                <p class="text-slate-500 text-sm mt-1">Advanced Cloud Pharmacy ERP & Regulatory Compliance Suite</p>
+                <p class="text-slate-500 text-sm mt-1">Cloud Pharmacy ERP & Licensing Gateway</p>
                 <div class="mt-3 inline-block bg-slate-900 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-sm">
                     Designed & Developed by Abinash Singh
                 </div>
             </div>
+
+            <!-- SUBSCRIPTION PRICING CARDS -->
+            <div class="mb-8 bg-slate-100 p-6 rounded-2xl border border-slate-200">
+                <h2 class="text-center font-extrabold text-lg text-slate-900 mb-1">💳 Choose Subscription Plan</h2>
+                <p class="text-center text-xs text-slate-500 mb-6">Select plan to activate software license</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Starter Plan -->
+                    <div id="planMonthlyCard" onclick="selectPlan('MONTHLY')" class="cursor-pointer bg-white p-5 rounded-xl border-2 border-slate-300 hover:border-emerald-500 transition relative">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Starter Pack</span>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-1">₹499 <span class="text-xs font-normal text-slate-500">/ month</span></h3>
+                        <ul class="mt-3 space-y-1 text-xs text-slate-600">
+                            <li>✓ Full POS & Barcode Scanner</li>
+                            <li>✓ Inventory & Expiry Alerts</li>
+                            <li>✓ 30 Days Valid License</li>
+                        </ul>
+                    </div>
+
+                    <!-- Enterprise Plan -->
+                    <div id="planYearlyCard" onclick="selectPlan('YEARLY')" class="cursor-pointer bg-white p-5 rounded-xl border-2 border-emerald-500 ring-2 ring-emerald-500/20 transition relative">
+                        <span class="absolute -top-3 right-4 bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Best Value (Save 33%)</span>
+                        <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Enterprise Annual</span>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-1">₹3,999 <span class="text-xs font-normal text-slate-500">/ year</span></h3>
+                        <ul class="mt-3 space-y-1 text-xs text-slate-600">
+                            <li>✓ Everything in Monthly</li>
+                            <li>✓ Schedule H1 & GSTR-1 CSV Reports</li>
+                            <li>✓ 365 Days Enterprise License</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
             
-            <!-- Registration Card with Drug License Support -->
+            <!-- Registration Card -->
             <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 mb-6 relative overflow-hidden">
                 <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-500"></div>
                 <h2 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">🏥 Register Licensed Pharmacy</h2>
+                
+                <input type="hidden" id="selectedPlanType" value="YEARLY">
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Store / Firm Name</label><input type="text" id="regStoreName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Apex Pharma"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Owner / Pharmacist Name</label><input type="text" id="regOwner" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Mr. Rajesh Kumar"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Store / Firm Name</label><input type="text" id="regStoreName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Apex Pharma"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Pharmacist Name</label><input type="text" id="regOwner" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Rajesh Kumar"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Drug License No (Form 20/21)</label><input type="text" id="regLicense" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono" placeholder="DL-20B-123456"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">GSTIN Number</label><input type="text" id="regGstin" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono" placeholder="27AAAAA0000A1Z5"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label><input type="email" id="regEmail" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="store@gmail.com"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Secure Password</label><input type="password" id="regPass" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="••••••••"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Password</label><input type="password" id="regPass" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="••••••••"></div>
                 </div>
-                <button onclick="handleRegister()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold p-3.5 rounded-xl shadow-md transition transform active:scale-95 text-sm">Register Store & Activate ERP</button>
+                <button onclick="handleRegister()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold p-3.5 rounded-xl shadow-md transition transform active:scale-95 text-sm">Activate & Launch Dashboard</button>
             </div>
 
             <!-- Login Card -->
@@ -69,13 +103,27 @@
                 <div class="space-y-4">
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label><input type="email" id="loginEmail" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder="store@gmail.com"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Password</label><input type="password" id="loginPass" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder="••••••••"></div>
-                    <button onclick="handleLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold p-3.5 rounded-xl shadow-md transition transform active:scale-95 text-sm">Access Secured Dashboard</button>
+                    <button onclick="handleLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold p-3.5 rounded-xl shadow-md transition transform active:scale-95 text-sm">Access Secured Portal</button>
                 </div>
             </div>
         </div>
 
         <!-- MAIN DASHBOARD -->
         <div id="appDashboard" class="container mx-auto hidden">
+            <!-- DYNAMIC SUBSCRIPTION BANNER -->
+            <div id="subBanner" class="bg-slate-900 text-white p-3.5 px-6 rounded-xl mb-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs shadow-md">
+                <div class="flex items-center gap-3">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Status: <b id="subStatusText" class="text-emerald-400">ACTIVE</b></span>
+                    <span class="text-slate-600">|</span>
+                    <span>Plan: <b id="subPlanText">Enterprise Annual</b></span>
+                    <span class="text-slate-600">|</span>
+                    <span>Expiry: <b id="subExpiryText" class="text-amber-300">--</b></span>
+                    <span id="daysLeftBadge" class="bg-emerald-500/20 text-emerald-300 font-bold px-2.5 py-0.5 rounded-md border border-emerald-500/30"></span>
+                </div>
+                <button onclick="openRenewModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg font-bold transition shadow-sm">⚡ Renew / Enter Key</button>
+            </div>
+
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-5 mb-6 gap-4">
                 <div>
                     <h2 id="storeTitle" class="text-2xl font-extrabold text-slate-900">Store Dashboard</h2>
@@ -92,57 +140,55 @@
                     <p id="statTotalItems" class="text-2xl font-bold text-slate-900 mt-2">0</p>
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inventory Valuation (MRP)</span>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Stock Value (MRP)</span>
                     <p id="statStockVal" class="text-2xl font-bold text-slate-900 mt-2">₹0</p>
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Expiry/Near-Expiry Alerts</span>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Expiry Alerts</span>
                     <p id="statExpiryAlert" class="text-2xl font-bold text-red-600 mt-2">0</p>
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Today's Total Revenue</span>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Today's Sales Revenue</span>
                     <p id="statRevenue" class="text-2xl font-bold text-emerald-600 mt-2">₹0</p>
                 </div>
             </div>
 
             <!-- Navigation Tabs -->
             <div class="flex gap-2 border-b border-slate-200 pb-3 mb-6 overflow-x-auto no-print">
-                <button onclick="switchTab(event, 'inventoryTab')" class="tab-btn active bg-slate-900 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-sm transition whitespace-nowrap">📦 Inventory & Catalog</button>
+                <button onclick="switchTab(event, 'inventoryTab')" class="tab-btn active bg-slate-900 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-sm transition whitespace-nowrap">📦 Inventory & Stock</button>
                 <button onclick="switchTab(event, 'posTab')" class="tab-btn text-slate-600 hover:bg-slate-100 px-5 py-2.5 rounded-xl font-semibold text-sm transition whitespace-nowrap">💳 Barcode POS & Billing</button>
-                <button onclick="switchTab(event, 'scheduleH1Tab')" class="tab-btn text-slate-600 hover:bg-slate-100 px-5 py-2.5 rounded-xl font-semibold text-sm transition whitespace-nowrap">📋 Schedule H1 Register</button>
+                <button onclick="switchTab(event, 'scheduleH1Tab')" class="tab-btn text-slate-600 hover:bg-slate-100 px-5 py-2.5 rounded-xl font-semibold text-sm transition whitespace-nowrap">📋 Schedule H1 Log</button>
                 <button onclick="switchTab(event, 'salesTab')" class="tab-btn text-slate-600 hover:bg-slate-100 px-5 py-2.5 rounded-xl font-semibold text-sm transition whitespace-nowrap">📊 Sales & GSTR-1</button>
             </div>
 
             <!-- Inventory Tab -->
             <div id="inventoryTab" class="tab-content">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Manage Medicine Stock & Catalog</h3>
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Manage Medicine Stock Catalog</h3>
                 
                 <div class="bg-gradient-to-br from-emerald-50 to-teal-50 p-5 rounded-2xl mb-6 border border-emerald-200">
-                    <label class="text-xs font-bold text-emerald-800 uppercase tracking-wider">⚡ Mega Catalog Lookup (1000+ Ethical & Generic Brands):</label>
+                    <label class="text-xs font-bold text-emerald-800 uppercase tracking-wider">⚡ Mega Catalog Lookup (1000+ Brands):</label>
                     <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <input type="text" id="megaCatalogSearch" placeholder="Filter names (e.g. Dolo, Pan, Augmentin)..." onkeyup="filterMegaCatalog()" class="w-full p-3 bg-white border border-emerald-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="text" id="megaCatalogSearch" placeholder="Search brands (e.g. Dolo, Pan, Augmentin)..." onkeyup="filterMegaCatalog()" class="w-full p-3 bg-white border border-emerald-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         <select id="megaCatalogSelect" onchange="loadMegaCatalogItem()" class="w-full p-3 bg-white border border-emerald-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                            <option value="">-- Choose from Master Database --</option>
+                            <option value="">-- Select Master Drug --</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Medicine Name</label><input type="text" id="medName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Dolo 650"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Salt / Composition</label><input type="text" id="medSalt" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Paracetamol"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Batch / Barcode ID</label><input type="text" id="medBatch" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono" placeholder="Scan or type barcode"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Distributor / Supplier</label><input type="text" id="medSupplier" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Supplier Name"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Salt / Formula</label><input type="text" id="medSalt" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Paracetamol"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Batch / Barcode ID</label><input type="text" id="medBatch" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono" placeholder="Scan barcode"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Supplier</label><input type="text" id="medSupplier" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Distributor Name"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Expiry Date</label><input type="date" id="medExpiry" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Opening Stock Qty</label><input type="number" id="medQty" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="100"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Opening Qty</label><input type="number" id="medQty" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="100"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Retail MRP (₹)</label><input type="number" id="medPrice" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="50.00"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Wholesale Rate (₹)</label><input type="number" id="medWholesalePrice" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="40.00"></div>
                 </div>
-                <div class="flex items-center gap-4 mb-6">
-                    <button onclick="addMedicine()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">➕ Add Item to Stock</button>
-                </div>
+                <button onclick="addMedicine()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">➕ Add Item to Stock</button>
 
-                <div class="mb-4">
-                    <input type="text" id="searchInventoryInput" placeholder="🔍 Search current inventory by name, salt or barcode..." onkeyup="filterInventory()" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <div class="mt-6 mb-4">
+                    <input type="text" id="searchInventoryInput" placeholder="🔍 Search current stock..." onkeyup="filterInventory()" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 </div>
 
                 <div class="overflow-x-auto rounded-xl border border-slate-200">
@@ -168,11 +214,11 @@
 
             <!-- POS Billing Tab -->
             <div id="posTab" class="tab-content hidden">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Barcode Scanner & FEFO Counter POS</h3>
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Barcode Scanner & Counter Billing POS</h3>
                 
                 <div class="bg-sky-50 p-4 rounded-2xl mb-6 border border-sky-200">
-                    <label class="text-xs font-bold text-sky-800 uppercase tracking-wider">📷 Barcode / Batch Scanner Input (Fast Add):</label>
-                    <input type="text" id="barcodeScanInput" placeholder="Focus here and scan barcode with hardware reader..." onkeypress="handleBarcodeScan(event)" class="w-full p-3 bg-white border border-sky-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500 mt-2 font-mono">
+                    <label class="text-xs font-bold text-sky-800 uppercase tracking-wider">📷 Hardware Barcode Scanner Input:</label>
+                    <input type="text" id="barcodeScanInput" placeholder="Focus here and scan barcode with hardware scanner..." onkeypress="handleBarcodeScan(event)" class="w-full p-3 bg-white border border-sky-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500 mt-2 font-mono">
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -183,26 +229,26 @@
                             <option value="wholesale">Wholesale Mode (B2B)</option>
                         </select>
                     </div>
-                    <div id="customerNameField"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Customer / Patient Name</label><input type="text" id="posCustomerName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Walk-in Customer"></div>
-                    <div id="wholesalePartyField" style="display:none;"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Chemist Firm Name</label><input type="text" id="posPartyName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Retail Medical Store"></div>
+                    <div id="customerNameField"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Customer Name</label><input type="text" id="posCustomerName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Walk-in Patient"></div>
+                    <div id="wholesalePartyField" style="display:none;"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Chemist Store Name</label><input type="text" id="posPartyName" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Retail Store"></div>
                     <div id="wholesaleGstField" style="display:none;"><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Buyer GSTIN</label><input type="text" id="posPartyGstin" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono" placeholder="GSTIN Number"></div>
                     <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Select Medicine (FEFO)</label><select id="posMedSelect" onchange="updatePosDetails()" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></select></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Available Stock</label><input type="text" id="posAvailableQty" disabled class="w-full p-3 border border-slate-200 rounded-xl bg-slate-100 text-sm font-bold"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Unit Selling Price (₹)</label><input type="text" id="posPrice" disabled class="w-full p-3 border border-slate-200 rounded-xl bg-slate-100 text-sm font-bold"></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Billing Quantity</label><input type="number" id="posQty" value="1" min="1" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Stock</label><input type="text" id="posAvailableQty" disabled class="w-full p-3 border border-slate-200 rounded-xl bg-slate-100 text-sm font-bold"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Selling Rate (₹)</label><input type="text" id="posPrice" disabled class="w-full p-3 border border-slate-200 rounded-xl bg-slate-100 text-sm font-bold"></div>
+                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Quantity</label><input type="number" id="posQty" value="1" min="1" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></div>
                 </div>
-                <button onclick="addToCart()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">🛒 Add Item to Cart</button>
+                <button onclick="addToCart()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">🛒 Add to Cart</button>
 
                 <div class="mt-6">
-                    <h4 class="font-bold text-slate-800 mb-3">Active Billing Cart</h4>
+                    <h4 class="font-bold text-slate-800 mb-3">Active Cart Items</h4>
                     <div class="overflow-x-auto rounded-xl border border-slate-200">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
                                 <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
-                                    <th class="p-4">Medicine Name</th>
+                                    <th class="p-4">Item & Batch</th>
                                     <th class="p-4">Qty</th>
-                                    <th class="p-4">Unit Price</th>
-                                    <th class="p-4">Total Amount</th>
+                                    <th class="p-4">Price</th>
+                                    <th class="p-4">Amount</th>
                                     <th class="p-4">Action</th>
                                 </tr>
                             </thead>
@@ -221,7 +267,7 @@
                             <p id="invLicenseHeader" class="text-xs text-emerald-700 font-mono mt-0.5"></p>
                         </div>
                         <div class="text-right">
-                            <span class="bg-slate-100 text-slate-800 text-xs font-semibold px-3 py-1 rounded-full">ORIGINAL FOR RECIPIENT</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-semibold px-3 py-1 rounded-full">ORIGINAL RECEIPT</span>
                         </div>
                     </div>
                     <p id="invMetaInfo" class="text-xs text-slate-500 mb-6"></p>
@@ -242,20 +288,20 @@
                     
                     <div class="flex justify-between items-center flex-wrap gap-3">
                         <div class="flex gap-3 flex-wrap no-print">
-                            <button onclick="window.print()" class="bg-sky-600 hover:bg-sky-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-md">🖨️ Print ESC/POS Receipt</button>
-                            <button onclick="sendWhatsAppInvoice()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-md">💬 Send Bill via WhatsApp API</button>
+                            <button onclick="window.print()" class="bg-sky-600 hover:bg-sky-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-md">🖨️ Thermal Print Receipt</button>
+                            <button onclick="sendWhatsAppInvoice()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-md">💬 WhatsApp Invoice</button>
                         </div>
                         <div class="text-[11px] text-slate-400 font-medium">
-                            Software Crafted by <span class="text-slate-700 font-bold">Abinash Singh</span>
+                            Designed & Developed by <span class="text-slate-700 font-bold">Abinash Singh</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Schedule H1 Register Tab (Regulatory Compliance) -->
+            <!-- Schedule H1 Register Tab -->
             <div id="scheduleH1Tab" class="tab-content hidden">
-                <h3 class="text-lg font-bold text-slate-800 mb-2">Schedule H1 / Strict Drug Audit Register</h3>
-                <p class="text-xs text-slate-500 mb-4">Mandatory regulatory log for high-potency antibiotics and controlled substances under Indian Drugs Rules.</p>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">Schedule H1 Compliance Log</h3>
+                <p class="text-xs text-slate-500 mb-4">Mandatory regulatory log for controlled antibiotics under Indian Drug Rules.</p>
                 <div class="overflow-x-auto rounded-xl border border-slate-200">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
@@ -263,8 +309,8 @@
                                 <th class="p-4">Date & Time</th>
                                 <th class="p-4">Drug Name</th>
                                 <th class="p-4">Batch ID</th>
-                                <th class="p-4">Qty Sold</th>
-                                <th class="p-4">Patient / Doctor Details</th>
+                                <th class="p-4">Qty</th>
+                                <th class="p-4">Patient / Prescribing Doctor</th>
                             </tr>
                         </thead>
                         <tbody id="scheduleH1TableBody" class="divide-y divide-slate-100"></tbody>
@@ -274,9 +320,9 @@
 
             <!-- Sales History Tab -->
             <div id="salesTab" class="tab-content hidden">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Sales Ledger & GSTR-1 B2B Reports</h3>
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Sales Ledger & GST Reports</h3>
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-                    <input type="text" id="searchSalesInput" placeholder="🔍 Search records by Invoice ID or Buyer Name..." onkeyup="filterSales()" class="w-full sm:w-80 p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="searchSalesInput" placeholder="🔍 Search by Invoice ID or Customer..." onkeyup="filterSales()" class="w-full sm:w-80 p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     <button onclick="exportGSTR1Report()" class="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white font-semibold px-6 py-3 rounded-xl text-sm shadow-md transition">📊 Export GSTR-1 CSV Report</button>
                 </div>
                 <div class="overflow-x-auto rounded-xl border border-slate-200">
@@ -284,10 +330,10 @@
                         <thead>
                             <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
                                 <th class="p-4">Invoice ID</th>
-                                <th class="p-4">Mode</th>
-                                <th class="p-4">Buyer / Customer Info</th>
+                                <th class="p-4">Type</th>
+                                <th class="p-4">Buyer Info</th>
                                 <th class="p-4">Date & Time</th>
-                                <th class="p-4">Net Amount</th>
+                                <th class="p-4">Amount</th>
                             </tr>
                         </thead>
                         <tbody id="salesTableBody" class="divide-y divide-slate-100"></tbody>
@@ -297,7 +343,44 @@
         </div>
     </div>
 
-    <!-- PROFESSIONAL FOOTER BRANDING CREDIT -->
+    <!-- RENEWAL & LICENSE ACTIVATION MODAL -->
+    <div id="renewModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-100">
+            <h3 class="text-xl font-bold text-slate-900 mb-1">⚡ Software License Gateway</h3>
+            <p class="text-xs text-slate-500 mb-4">Select plan or enter renewal activation key</p>
+            
+            <div class="space-y-3 mb-5">
+                <div onclick="setRenewalPlan('MONTHLY')" id="renMonthlyOption" class="cursor-pointer p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/50 flex justify-between items-center">
+                    <div>
+                        <span class="font-bold text-slate-900 text-sm">Monthly Plan</span>
+                        <p class="text-[11px] text-slate-500">+30 Days Software Access</p>
+                    </div>
+                    <span class="font-bold text-slate-900">₹499</span>
+                </div>
+                <div onclick="setRenewalPlan('YEARLY')" id="renYearlyOption" class="cursor-pointer p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 flex justify-between items-center">
+                    <div>
+                        <span class="font-bold text-slate-900 text-sm">Enterprise Annual Plan</span>
+                        <p class="text-[11px] text-slate-500">+365 Days Software Access</p>
+                    </div>
+                    <span class="font-bold text-slate-900">₹3,999</span>
+                </div>
+            </div>
+
+            <!-- Demo Payment Gateway simulation -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-5 text-center">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Scan UPI / Demo Payment</span>
+                <p class="text-xs text-slate-600 mb-2">Use Activation Key: <b class="font-mono text-emerald-600">PRO2026KEY</b></p>
+                <input type="text" id="activationKeyInput" placeholder="Enter License Activation Key..." class="w-full p-2.5 border border-slate-300 rounded-lg text-xs text-center font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeRenewModal()" class="w-1/3 bg-slate-100 text-slate-700 font-semibold p-3 rounded-xl text-xs hover:bg-slate-200">Cancel</button>
+                <button onclick="verifyAndRenew()" class="w-2/3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold p-3 rounded-xl text-xs shadow-md">Activate License Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER BRANDING CREDIT -->
     <footer class="w-full text-center py-6 mt-12 border-t border-slate-200 text-xs text-slate-500">
         <p>MediCloud Enterprise ERP &bull; Designed & Developed with ❤️ by <span class="font-bold text-slate-800">Abinash Singh</span></p>
     </footer>
@@ -312,50 +395,25 @@
             {n: "Augmentin 625 Duo", s: "Amoxycillin & Clavulanate", m: 120, w: 105, h1: true},
             {n: "Taxim-O 200", s: "Cefixime", m: 115, w: 98, h1: true},
             {n: "Monocef 1g Inj", s: "Ceftriaxone", m: 65, w: 55, h1: true},
-            {n: "Azithromycin 500", s: "Azithromycin", m: 115, w: 98, h1: true},
-            {n: "Zerodol-SP", s: "Aceclofenac, Paracetamol & Serratiopeptidase", m: 115, w: 98, h1: false},
-            {n: "Meftal-Spas", s: "Mefenamic Acid & Dicyclomine", m: 50, w: 42, h1: false},
-            {n: "Montek-LC", s: "Montelukast & Levocetirizine", m: 210, w: 185, h1: false},
-            {n: "Shelcal 500", s: "Calcium & Vitamin D3", m: 125, w: 108, h1: false},
-            {n: "Uprise-D3 60K", s: "Cholecalciferol", m: 100, w: 85, h1: false},
-            {n: "Telma 40", s: "Telmisartan", m: 220, w: 190, h1: false},
-            {n: "Atorva 10", s: "Atorvastatin", m: 115, w: 98, h1: false},
-            {n: "Glycomet GP 1", s: "Glimepiride & Metformin", m: 65, w: 54, h1: false},
-            {n: "Omez 20", s: "Omeprazole", m: 45, w: 38, h1: false},
-            {n: "Cetzine 10", s: "Cetirizine", m: 20, w: 15, h1: false}
+            {n: "Azithromycin 500", s: "Azithromycin", m: 115, w: 98, h1: true}
         ];
 
-        const commonSaltsList = ["Paracetamol", "Pantoprazole", "Amoxycillin", "Cefixime", "Azithromycin", "Aceclofenac", "Montelukast", "Cetirizine", "Metformin", "Glimepiride", "Telmisartan", "Atorvastatin"];
-        
-        for(let i = 19; i <= 300; i++) {
-            let isH1 = i % 7 === 0;
-            let saltName = commonSaltsList[i % commonSaltsList.length];
-            let brandName = (isH1 ? "H1-Brand-" : "Pharma-") + saltName + " " + ((i % 4) * 100 + 50);
-            let mrp = Math.floor(20 + (i * 3) % 250);
-            let wholesaleRate = Math.floor(mrp * 0.78);
-            megaMedicineDatabase.push({n: brandName, s: saltName, m: mrp, w: wholesaleRate, h1: isH1});
-        }
-
         let db = JSON.parse(localStorage.getItem('mediCloudEnterpriseDB')) || { users: [], currentSession: null, inventory: [], sales: [], scheduleH1: [] };
+        let selectedRenType = 'MONTHLY';
+
         function saveData() { localStorage.setItem('mediCloudEnterpriseDB', JSON.stringify(db)); }
 
-        function populateMegaCatalogSelect(filterText = '') {
-            let sel = document.getElementById('megaCatalogSelect');
-            sel.innerHTML = '<option value="">-- Choose from Master Database --</option>';
-            let count = 0;
-            for(let med of megaMedicineDatabase) {
-                if(!filterText || med.n.toLowerCase().includes(filterText.toLowerCase()) || med.s.toLowerCase().includes(filterText.toLowerCase())) {
-                    let h1Tag = med.h1 ? ' [Schedule H1]' : '';
-                    sel.innerHTML += `<option value="${med.n}|${med.s}|${med.m}|${med.w}|${med.h1}">${med.n} (${med.s})${h1Tag} - MRP: ₹${med.m}</option>`;
-                    count++;
-                    if(count > 100) break;
-                }
+        function selectPlan(type) {
+            document.getElementById('selectedPlanType').value = type;
+            let mCard = document.getElementById('planMonthlyCard');
+            let yCard = document.getElementById('planYearlyCard');
+            if(type === 'MONTHLY') {
+                mCard.className = "cursor-pointer bg-white p-5 rounded-xl border-2 border-emerald-500 ring-2 ring-emerald-500/20 transition relative";
+                yCard.className = "cursor-pointer bg-white p-5 rounded-xl border-2 border-slate-300 hover:border-emerald-500 transition relative";
+            } else {
+                yCard.className = "cursor-pointer bg-white p-5 rounded-xl border-2 border-emerald-500 ring-2 ring-emerald-500/20 transition relative";
+                mCard.className = "cursor-pointer bg-white p-5 rounded-xl border-2 border-slate-300 hover:border-emerald-500 transition relative";
             }
-        }
-        
-        function filterMegaCatalog() {
-            let query = document.getElementById('megaCatalogSearch').value;
-            populateMegaCatalogSelect(query);
         }
 
         function handleRegister() {
@@ -365,14 +423,19 @@
             let gstin = document.getElementById('regGstin').value.trim();
             let email = document.getElementById('regEmail').value.trim();
             let pass = document.getElementById('regPass').value.trim();
+            let plan = document.getElementById('selectedPlanType').value;
 
             if(!store || !owner || !license || !gstin || !email || !pass) { 
-                alert('All enterprise fields including Drug License & GSTIN are required!'); 
+                alert('All pharmacy parameters including Drug License & GSTIN are mandatory!'); 
                 return; 
             }
-            db.users.push({ store, owner, license, gstin, email, pass });
+
+            let daysAdd = plan === 'MONTHLY' ? 30 : 365;
+            let expiryDate = new Date(Date.now() + daysAdd * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+            db.users.push({ store, owner, license, gstin, email, pass, plan, expiryDate, status: 'ACTIVE' });
             saveData();
-            alert('Pharmacy Registered Successfully!');
+            alert(`Pharmacy Account Registered Successfully!\nValid License till: ${expiryDate}`);
             document.getElementById('loginEmail').value = email;
         }
 
@@ -385,7 +448,7 @@
                 saveData();
                 checkSession();
             } else {
-                alert('Invalid Credentials!');
+                alert('Invalid Email Address or Password!');
             }
         }
 
@@ -393,17 +456,78 @@
 
         function checkSession() {
             if(db.currentSession) {
+                let user = db.currentSession;
+                let today = new Date();
+                let expDate = new Date(user.expiryDate);
+                let diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('appDashboard').style.display = 'block';
-                document.getElementById('storeTitle').innerText = db.currentSession.store;
-                document.getElementById('ownerTitle').innerText = 'Chief Pharmacist: ' + db.currentSession.owner;
-                document.getElementById('licenseTitle').innerText = `Drug License: ${db.currentSession.license} | GSTIN: ${db.currentSession.gstin}`;
+                document.getElementById('storeTitle').innerText = user.store;
+                document.getElementById('ownerTitle').innerText = 'Pharmacist: ' + user.owner;
+                document.getElementById('licenseTitle').innerText = `Drug License: ${user.license} | GSTIN: ${user.gstin}`;
+                
+                document.getElementById('subPlanText').innerText = user.plan === 'MONTHLY' ? 'Starter Monthly' : 'Enterprise Annual';
+                document.getElementById('subExpiryText').innerText = user.expiryDate;
+
+                let badge = document.getElementById('daysLeftBadge');
+                if(diffDays <= 0) {
+                    badge.innerText = "EXPIRED";
+                    badge.className = "bg-red-500/20 text-red-300 font-bold px-2.5 py-0.5 rounded-md border border-red-500/30";
+                    alert('⚠️ License Expired!\nPlease enter renewal key to access dashboard.');
+                    openRenewModal();
+                } else {
+                    badge.innerText = `${diffDays} Days Left`;
+                    badge.className = diffDays < 7 ? "bg-amber-500/20 text-amber-300 font-bold px-2.5 py-0.5 rounded-md border border-amber-500/30" : "bg-emerald-500/20 text-emerald-300 font-bold px-2.5 py-0.5 rounded-md border border-emerald-500/30";
+                }
+
                 populateMegaCatalogSelect();
                 refreshDashboard();
             } else {
                 document.getElementById('authSection').style.display = 'block';
                 document.getElementById('appDashboard').style.display = 'none';
             }
+        }
+
+        function openRenewModal() { document.getElementById('renewModal').classList.remove('hidden'); }
+        function closeRenewModal() { document.getElementById('renewModal').classList.add('hidden'); }
+
+        function setRenewalPlan(type) {
+            selectedRenType = type;
+            let mOpt = document.getElementById('renMonthlyOption');
+            let yOpt = document.getElementById('renYearlyOption');
+            if(type === 'MONTHLY') {
+                mOpt.className = "cursor-pointer p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/50 flex justify-between items-center";
+                yOpt.className = "cursor-pointer p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 flex justify-between items-center";
+            } else {
+                yOpt.className = "cursor-pointer p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/50 flex justify-between items-center";
+                mOpt.className = "cursor-pointer p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 flex justify-between items-center";
+            }
+        }
+
+        function verifyAndRenew() {
+            let key = document.getElementById('activationKeyInput').value.trim();
+            if(key !== "PRO2026KEY") {
+                alert("Invalid Activation Key! (Use demo key: PRO2026KEY)");
+                return;
+            }
+
+            if(!db.currentSession) return;
+            let daysAdd = selectedRenType === 'MONTHLY' ? 30 : 365;
+            let currentExp = new Date(db.currentSession.expiryDate > new Date().toISOString().split('T')[0] ? db.currentSession.expiryDate : Date.now());
+            currentExp.setDate(currentExp.getDate() + daysAdd);
+            
+            let newExpStr = currentExp.toISOString().split('T')[0];
+            db.currentSession.expiryDate = newExpStr;
+            db.currentSession.plan = selectedRenType;
+            
+            let userObj = db.users.find(u => u.email === db.currentSession.email);
+            if(userObj) { userObj.expiryDate = newExpStr; userObj.plan = selectedRenType; }
+            
+            saveData();
+            closeRenewModal();
+            alert(`License Renewed Successfully!\nNew Validity: ${newExpStr}`);
+            checkSession();
         }
 
         function switchTab(evt, tabId) {
@@ -415,6 +539,20 @@
             document.getElementById(tabId).classList.remove('hidden');
             evt.currentTarget.classList.remove('text-slate-600', 'hover:bg-slate-100');
             evt.currentTarget.classList.add('bg-slate-900', 'text-white', 'shadow-sm');
+        }
+
+        function populateMegaCatalogSelect(filterText = '') {
+            let sel = document.getElementById('megaCatalogSelect');
+            sel.innerHTML = '<option value="">-- Select Master Drug --</option>';
+            megaMedicineDatabase.forEach(med => {
+                let h1Tag = med.h1 ? ' [Schedule H1]' : '';
+                sel.innerHTML += `<option value="${med.n}|${med.s}|${med.m}|${med.w}|${med.h1}">${med.n} (${med.s})${h1Tag} - MRP: ₹${med.m}</option>`;
+            });
+        }
+
+        function filterMegaCatalog() {
+            let query = document.getElementById('megaCatalogSearch').value;
+            populateMegaCatalogSelect(query);
         }
 
         function loadMegaCatalogItem() {
@@ -453,7 +591,7 @@
             let wholesalePrice = parseFloat(document.getElementById('medWholesalePrice').value);
 
             if(!name || !salt || !expiry || isNaN(qty) || isNaN(price) || isNaN(wholesalePrice)) {
-                alert('Please fill out all required parameters!');
+                alert('Fill out all required parameters!');
                 return;
             }
 
@@ -472,7 +610,6 @@
             document.getElementById('medQty').value = '';
             document.getElementById('medPrice').value = '';
             document.getElementById('medWholesalePrice').value = '';
-            document.getElementById('megaCatalogSelect').value = '';
         }
 
         function deleteMedicine(id) {
@@ -522,9 +659,7 @@
                     rowClass = 'near-expiry';
                 }
 
-                if(i.h1) {
-                    statusBadge += ' <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-800">H1</span>';
-                }
+                if(i.h1) statusBadge += ' <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-800">H1</span>';
 
                 invBody.innerHTML += `
                     <tr class="border-b border-slate-100 ${rowClass}">
@@ -552,13 +687,10 @@
         function updatePosDropdown() {
             let sel = document.getElementById('posMedSelect');
             sel.innerHTML = '<option value="">-- Choose Medicine --</option>';
-            // FEFO Logic: First Expiring First Out sorting
             let sortedInventory = [...db.inventory].sort((a,b) => new Date(a.expiry) - new Date(b.expiry));
             
             sortedInventory.forEach(i => {
-                if(i.qty > 0) {
-                    sel.innerHTML += `<option value="${i.id}">${i.name} | Batch: ${i.batch} | Exp: ${i.expiry} | Stock: ${i.qty}</option>`;
-                }
+                if(i.qty > 0) sel.innerHTML += `<option value="${i.id}">${i.name} | Batch: ${i.batch} | Exp: ${i.expiry} | Stock: ${i.qty}</option>`;
             });
             updatePosDetails();
         }
@@ -586,7 +718,7 @@
                     addToCart();
                     document.getElementById('barcodeScanInput').value = '';
                 } else {
-                    alert('Item not found in inventory matching scanned barcode!');
+                    alert('Item not found matching scanned barcode!');
                 }
             }
         }
@@ -599,36 +731,22 @@
             let mode = document.getElementById('billingMode').value;
             let item = db.inventory.find(i => i.id == id);
 
-            if(!item || isNaN(qty) || qty <= 0) {
-                alert('Select a valid medicine and correct quantity.');
-                return;
-            }
-
-            if(qty > item.qty) {
-                alert('Error: Requested quantity exceeds current stock!');
-                return;
-            }
+            if(!item || isNaN(qty) || qty <= 0) { alert('Select a valid medicine and quantity.'); return; }
+            if(qty > item.qty) { alert('Requested quantity exceeds available stock!'); return; }
 
             let unitPrice = mode === 'wholesale' ? item.wholesalePrice : item.price;
             let existingIndex = activeCart.findIndex(c => c.id == id);
 
             if(existingIndex > -1) {
-                if(activeCart[existingIndex].qty + qty > item.qty) {
-                    alert('Total cart amount exceeds store inventory limit!');
-                    return;
-                }
+                if(activeCart[existingIndex].qty + qty > item.qty) { alert('Cart quantity exceeds stock limit!'); return; }
                 activeCart[existingIndex].qty += qty;
             } else {
                 activeCart.push({ id: item.id, name: item.name, batch: item.batch, qty: qty, price: unitPrice, h1: item.h1 });
             }
-
             renderCart();
         }
 
-        function removeFromCart(index) {
-            activeCart.splice(index, 1);
-            renderCart();
-        }
+        function removeFromCart(index) { activeCart.splice(index, 1); renderCart(); }
 
         function renderCart() {
             let tbody = document.getElementById('cartTableBody');
@@ -648,15 +766,11 @@
                     </tr>
                 `;
             });
-
             document.getElementById('cartGrandTotal').innerText = 'Grand Total: ₹' + grandTotal.toFixed(2);
         }
 
         function checkoutBill() {
-            if(activeCart.length === 0) {
-                alert('Cart is empty!');
-                return;
-            }
+            if(activeCart.length === 0) { alert('Cart is empty!'); return; }
 
             let mode = document.getElementById('billingMode').value;
             let buyerInfo = '';
@@ -665,7 +779,7 @@
             if(mode === 'wholesale') {
                 buyerInfo = document.getElementById('posPartyName').value.trim() || 'B2B Client';
                 gstin = document.getElementById('posPartyGstin').value.trim();
-                if(!gstin) { alert('GSTIN is mandatory for B2B tax filing!'); return; }
+                if(!gstin) { alert('GSTIN is mandatory for wholesale bills!'); return; }
             } else {
                 buyerInfo = document.getElementById('posCustomerName').value.trim() || 'Walk-in Patient';
             }
@@ -673,8 +787,8 @@
             let containsH1 = activeCart.some(item => item.h1);
             let h1Details = "Standard Prescription";
             if(containsH1) {
-                h1Details = prompt("⚠️ SCHEDULE H1 ALERT: Controlled drug detected!\nEnter Patient Name & Doctor Name for compliance register:");
-                if(!h1Details) { alert('Transaction cancelled. Schedule H1 compliance details are mandatory.'); return; }
+                h1Details = prompt("⚠️ SCHEDULE H1 ALERT: High Potency Antibiotic Detected!\nEnter Patient & Doctor Info:");
+                if(!h1Details) { alert('Transaction cancelled. Schedule H1 details required by law.'); return; }
             }
 
             let grandTotal = activeCart.reduce((sum, item) => sum + (item.qty * item.price), 0);
@@ -686,13 +800,7 @@
                 if(storeItem) {
                     storeItem.qty -= cartItem.qty;
                     if(cartItem.h1) {
-                        db.scheduleH1.push({
-                            date: timestamp,
-                            drugName: cartItem.name,
-                            batch: cartItem.batch,
-                            qty: cartItem.qty,
-                            compliance: h1Details
-                        });
+                        db.scheduleH1.push({ date: timestamp, drugName: cartItem.name, batch: cartItem.batch, qty: cartItem.qty, compliance: h1Details });
                     }
                 }
             });
@@ -721,15 +829,13 @@
 
             let taxableVal = grandTotal / 1.12;
             let gstTotal = grandTotal - taxableVal;
-            document.getElementById('taxBreakupBox').innerHTML = `
-                Taxable Value: ₹${taxableVal.toFixed(2)} | CGST (6%): ₹${(gstTotal/2).toFixed(2)} | SGST (6%): ₹${(gstTotal/2).toFixed(2)} | Total GST: ₹${gstTotal.toFixed(2)}
-            `;
+            document.getElementById('taxBreakupBox').innerHTML = `Taxable Value: ₹${taxableVal.toFixed(2)} | CGST (6%): ₹${(gstTotal/2).toFixed(2)} | SGST (6%): ₹${(gstTotal/2).toFixed(2)} | Total GST: ₹${gstTotal.toFixed(2)}`;
             document.getElementById('invReceiptTotal').innerText = 'Grand Total: ₹' + grandTotal.toFixed(2);
             document.getElementById('invoiceReceiptBox').classList.remove('hidden');
 
             activeCart = [];
             renderCart();
-            alert('Invoice Generated Successfully!');
+            alert('Tax Invoice Generated!');
         }
 
         function renderSalesHistory(sales) {
@@ -752,7 +858,7 @@
             let tbody = document.getElementById('scheduleH1TableBody');
             tbody.innerHTML = '';
             if(!h1Logs || h1Logs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400 text-sm">No Schedule H1 controlled transactions recorded yet.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400 text-sm">No Schedule H1 transactions logged yet.</td></tr>';
                 return;
             }
             h1Logs.slice().reverse().forEach(log => {
@@ -791,13 +897,11 @@
         }
 
         function sendWhatsAppInvoice() {
-            let text = encodeURIComponent("Hello! Thank you for purchasing from " + (db.currentSession ? db.currentSession.store : 'Pharmacy') + ". Your tax invoice receipt has been issued.");
+            let text = encodeURIComponent("Thank you for purchasing from " + (db.currentSession ? db.currentSession.store : 'Pharmacy') + ". Your Tax invoice has been generated.");
             window.open(`https://wa.me/?text=${text}`, '_blank');
         }
 
-        window.onload = function() {
-            checkSession();
-        };
+        window.onload = function() { checkSession(); };
     </script>
 </body>
 </html>
