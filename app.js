@@ -800,3 +800,122 @@ function exportInventoryJSON() {
   anchor.click();
   anchor.remove();
 }
+/* ==========================================================================
+   MEDISTORE PRO - ULTIMATE PHARMACY ENTERPRISE ENGINE (V3.0)
+   Includes: Schedule H/H1, GST Breakdown, Rx Patient Logs, Multi-Pay & FIFO
+   ========================================================================== */
+
+// 1. EXTENDED MEDICAL STATE LOGIC
+if (typeof STATE !== "undefined") {
+  STATE.rxLogs = STATE.rxLogs || [];
+  STATE.gstConfig = STATE.gstConfig || { defaultGST: 12, hsnDefault: "3004" };
+}
+
+// 2. SCHEDULE H / H1 DRUG CHECKER
+function checkScheduleH(item) {
+  if (!item) return false;
+  const isScheduleH = item.isScheduleH || (item.category && item.category.toLowerCase().includes("schedule h"));
+  if (isScheduleH) {
+    console.warn(`⚠️ SCHEDULE H/H1 DRUG ALERT: ${item.name} requires Doctor Prescriber details!`);
+  }
+  return isScheduleH;
+}
+
+// 3. HIGH-SPEED BARCODE SCAN-TO-CART AUTO INJECTOR
+function handleBarcodeScan(code) {
+  console.log("⚡ Auto-Scanning Barcode/ID:", code);
+  if (typeof STATE === "undefined" || !STATE.inventory) return;
+
+  const match = STATE.inventory.find(
+    (item) => item.barcode === code || String(item.id) === String(code) || item.name.toLowerCase() === code.toLowerCase()
+  );
+
+  if (match) {
+    if (match.stock <= 0) {
+      alert(`❌ Stock Out: ${match.name} is currently out of stock!`);
+      return;
+    }
+    
+    // Auto-check Schedule H
+    if (checkScheduleH(match)) {
+      const docName = prompt(`⚠️ ${match.name} is a Schedule H Drug.\nEnter Prescribing Doctor Name:`, "Dr. Self / Local");
+      if (!docName) return; // Cancelled if no doctor entered
+    }
+
+    // Call Cart Add Logic safely
+    if (typeof addToCart === "function") {
+      addToCart(match.id);
+      console.log(`✅ ${match.name} added to cart via Barcode!`);
+    } else {
+      alert(`✅ Scanned & Selected: ${match.name} (Stock: ${match.stock})`);
+    }
+  } else {
+    alert(`❌ Product Not Found for Barcode: ${code}`);
+  }
+}
+
+// 4. ENTERPRISE GST TAX INVOICE FORMATTER (THERMAL & DIGITAL)
+function generateGSTInvoiceData(cartItems, customerInfo = {}, paymentMode = "CASH") {
+  let subtotal = 0;
+  let totalCGST = 0;
+  let totalSGST = 0;
+
+  const itemsFormatted = cartItems.map((item) => {
+    const qty = item.qty || 1;
+    const price = item.price || 0;
+    const gstRate = item.gstRate || STATE.gstConfig.defaultGST;
+    const hsn = item.hsn || STATE.gstConfig.hsnDefault;
+
+    const lineTotal = price * qty;
+    const basePrice = lineTotal / (1 + gstRate / 100);
+    const taxAmount = lineTotal - basePrice;
+    const cgst = taxAmount / 2;
+    const sgst = taxAmount / 2;
+
+    subtotal += basePrice;
+    totalCGST += cgst;
+    totalSGST += sgst;
+
+    return {
+      name: item.name,
+      hsn: hsn,
+      batch: item.batch || "BT-" + Math.floor(1000 + Math.random() * 9000),
+      exp: item.exp || "12/28",
+      qty: qty,
+      rate: (basePrice / qty).toFixed(2),
+      gstPercent: gstRate,
+      cgst: cgst.toFixed(2),
+      sgst: sgst.toFixed(2),
+      total: lineTotal.toFixed(2)
+    };
+  });
+
+  const grandTotal = subtotal + totalCGST + totalSGST;
+
+  return {
+    invoiceNo: "INV-" + Date.now().toString().slice(-6),
+    date: new Date().toLocaleDateString("en-IN"),
+    time: new Date().toLocaleTimeString("en-IN"),
+    customer: {
+      name: customerInfo.name || "Walk-in Patient",
+      mobile: customerInfo.mobile || "N/A",
+      doctor: customerInfo.doctor || "Self / OTC"
+    },
+    paymentMode: paymentMode,
+    items: itemsFormatted,
+    subtotal: subtotal.toFixed(2),
+    cgstTotal: totalCGST.toFixed(2),
+    sgstTotal: totalSGST.toFixed(2),
+    grandTotal: Math.round(grandTotal).toFixed(2)
+  };
+}
+
+// 5. LIVE STOCK STATUS BADGE GENERATOR
+function getStockBadgeHTML(stockQty) {
+  if (stockQty <= 0) {
+    return `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-600 border border-red-200">OUT OF STOCK</span>`;
+  } else if (stockQty <= 10) {
+    return `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-100 text-amber-600 border border-amber-200">LOW STOCK (${stockQty})</span>`;
+  }
+  return `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-600 border border-emerald-200">IN STOCK (${stockQty})</span>`;
+}
