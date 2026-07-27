@@ -8,25 +8,25 @@
 </head>
 <body>
 
-  <!-- Top Header Navigation -->
+  <!-- Navigation Bar -->
   <header class="navbar">
     <div class="logo">
       <h2>💊 Medistore Pro</h2>
-      <span class="badge">Bihar SaaS Edition</span>
+      <span class="badge">Bihar Advance SaaS</span>
     </div>
     <nav class="nav-links">
       <button class="mode-btn active" id="btnRetail">Retailer Mode</button>
       <button class="mode-btn" id="btnWholesale">Wholeseller Mode</button>
-      <button class="btn-login" onclick="alert('Login System Ready!')">Login / Account</button>
+      <button class="btn-login" onclick="alert('Login Portal Ready!')">Login / Register</button>
     </nav>
   </header>
 
-  <!-- Keyboard Shortcuts Helper Bar -->
+  <!-- Keyboard Shortcuts Bar -->
   <div class="shortcut-bar">
     <span>⚡ <b>Fast POS Keys:</b></span>
     <span class="key">F3: Search Focus</span>
-    <span class="key">F2: Clear Bill</span>
-    <span class="key">Alt + P: Print Invoice</span>
+    <span class="key">F2: Clear Counter</span>
+    <span class="key">Alt + P: Print GST Bill</span>
   </div>
 
   <!-- Main Work Area -->
@@ -34,22 +34,22 @@
     <!-- Top Search & Quick Stats -->
     <section class="pos-header">
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="F3 dabayein - Medicine name ya Generic composition search karein (e.g. Dolo, Paracetamol)...">
+        <input type="text" id="searchInput" placeholder="F3 dabayein - Medicine, Company, Batch, ya Generic search karein (e.g. Cipla, Dolo, B1024)...">
       </div>
       <div class="quick-stats">
         <div class="stat-card">
-          <small>Total Medicines</small>
+          <small>Total Loaded</small>
           <strong id="totalStockCount">0</strong>
         </div>
       </div>
     </section>
 
-    <!-- Main Layout: Medicine List + Quick Counter Bill -->
+    <!-- Main Layout: Medicine Cards + Counter Billing -->
     <div class="main-layout">
-      <!-- Left: Medicine Cards Grid -->
+      <!-- Left Side: Detailed Stock Grid -->
       <section id="medicineList" class="grid"></section>
 
-      <!-- Right: Fast Billing Counter -->
+      <!-- Right Side: Fast POS Billing Panel -->
       <aside class="cart-panel">
         <h3>🧾 Quick Billing Counter</h3>
         <div id="cartItems" class="cart-list">
@@ -60,13 +60,13 @@
             <span>Total Payable:</span>
             <strong id="cartTotal">₹0.00</strong>
           </div>
-          <button class="btn-print" onclick="printBill()">🖨️ Print & Send WhatsApp Bill</button>
+          <button class="btn-print" onclick="printBill()">🖨️ Print & Send WhatsApp GST Bill</button>
         </div>
       </aside>
     </div>
   </main>
 
-  <!-- Footer with Abinash Singh Branding -->
+  <!-- Footer with Designer Branding -->
   <footer class="footer">
     <p>&copy; 2026 Bihar Medistore Pro. All Rights Reserved.</p>
     <p class="designer-tag">Designed by <span>Abinash Singh</span></p>
