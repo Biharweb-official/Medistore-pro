@@ -1,76 +1,351 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en" class="h-full bg-slate-950">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bihar Medistore Pro - Retail & Wholesale POS</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medistore Next-Gen Enterprise | Medical OS</title>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS & FontAwesome Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    /* Ultra-Smooth UI & Custom Scrollbars */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.8); }
+    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.35); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.7); }
+
+    .glass-panel {
+      background: rgba(30, 41, 59, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-nav {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .virtual-scroll-container {
+      height: calc(100vh - 280px);
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .virtual-scroll-spacer {
+      position: absolute;
+      left: 0; top: 0; right: 0;
+      z-index: -1;
+    }
+
+    .med-row {
+      position: absolute;
+      left: 0; right: 0;
+      height: 48px;
+    }
+
+    .pulse-indicator {
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+    }
+  </style>
 </head>
-<body>
+<body class="h-full font-sans text-slate-100 antialiased selection:bg-brand-500 selection:text-white">
 
-  <!-- Navigation Bar -->
-  <header class="navbar">
-    <div class="logo">
-      <h2>💊 Medistore Pro</h2>
-      <span class="badge">Bihar Advance SaaS</span>
+  <!-- ================= AUTH MODAL (DUAL ROLE LOGIN) ================= -->
+  <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-xl p-4">
+    <div class="w-full max-w-md rounded-2xl glass-panel p-8 shadow-2xl transition-all border border-slate-800">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center justify-center space-x-3 mb-6">
+        <div class="p-3 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
+          <i class="fa-solid fa-notes-medical text-2xl"></i>
+        </div>
+        <div class="text-left">
+          <h1 class="text-xl font-black tracking-tight text-white">Medistore <span class="text-indigo-400">OS</span></h1>
+          <p class="text-[10px] font-mono text-slate-400 uppercase tracking-widest">Next-Gen Enterprise Engine</p>
+        </div>
+      </div>
+
+      <!-- Auth Switcher Tabs -->
+      <div class="flex bg-slate-900/80 p-1 rounded-xl mb-6 border border-slate-800">
+        <button id="tabClient" onclick="switchAuthTab('client')" class="w-1/2 py-2 text-center text-xs font-semibold rounded-lg text-white bg-brand-600 shadow-md transition-all">Counter / POS View</button>
+        <button id="tabDev" onclick="switchAuthTab('dev')" class="w-1/2 py-2 text-center text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all">Dev Console</button>
+      </div>
+
+      <!-- Auth Form -->
+      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-1.5">User ID / License</label>
+          <div class="relative">
+            <i class="fa-solid fa-user-gear absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+            <input type="text" id="authUsername" required class="w-full rounded-xl bg-slate-900/90 border border-slate-700/80 pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition" placeholder="admin" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-1.5">Access Code</label>
+          <div class="relative">
+            <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+            <input type="password" id="authPassword" required class="w-full rounded-xl bg-slate-900/90 border border-slate-700/80 pl-9 pr-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition" placeholder="••••••••" />
+          </div>
+        </div>
+
+        <div id="devModeField" class="hidden">
+          <label class="block text-xs font-medium text-rose-400 uppercase tracking-wider mb-1.5">Developer Secret Key</label>
+          <div class="relative">
+            <i class="fa-solid fa-terminal absolute left-3.5 top-1/2 -translate-y-1/2 text-rose-500 text-xs"></i>
+            <input type="password" id="devSecret" class="w-full rounded-xl bg-rose-950/30 border border-rose-800/80 pl-9 pr-4 py-2.5 text-sm text-rose-200 placeholder-rose-700 outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition font-mono" placeholder="DEV123" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 py-3 text-sm font-semibold text-white transition shadow-lg shadow-brand-500/20 active:scale-[0.99]">
+          Authenticate OS
+        </button>
+      </form>
     </div>
-    <nav class="nav-links">
-      <button class="mode-btn active" id="btnRetail">Retailer Mode</button>
-      <button class="mode-btn" id="btnWholesale">Wholeseller Mode</button>
-      <button class="btn-login" onclick="alert('Login Portal Ready!')">Login / Register</button>
-    </nav>
-  </header>
-
-  <!-- Keyboard Shortcuts Bar -->
-  <div class="shortcut-bar">
-    <span>⚡ <b>Fast POS Keys:</b></span>
-    <span class="key">F3: Search Focus</span>
-    <span class="key">F2: Clear Counter</span>
-    <span class="key">Alt + P: Print GST Bill</span>
   </div>
 
-  <!-- Main Work Area -->
-  <main class="container">
-    <!-- Top Search & Quick Stats -->
-    <section class="pos-header">
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="F3 dabayein - Medicine, Company, Batch, ya Generic search karein (e.g. Cipla, Dolo, B1024)...">
-      </div>
-      <div class="quick-stats">
-        <div class="stat-card">
-          <small>Total Loaded</small>
-          <strong id="totalStockCount">0</strong>
+  <!-- ================= MAIN WORKSPACE LAYOUT ================= -->
+  <div id="appLayout" class="hidden min-h-screen flex-col">
+    
+    <!-- Top Glass Header -->
+    <header class="glass-nav sticky top-0 z-40 px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="p-2.5 bg-gradient-to-tr from-brand-600 to-indigo-500 rounded-xl text-white shadow-md shadow-brand-500/20">
+          <i class="fa-solid fa-heart-pulse text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white flex items-center gap-2">
+            Medistore OS
+            <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-indicator"></span> 0% Lag Engine
+            </span>
+          </h1>
+          <p class="text-xs text-slate-400">Next-Gen Ultra Fast Pharmacy Management System</p>
         </div>
       </div>
-    </section>
 
-    <!-- Main Layout: Medicine Cards + Counter Billing -->
-    <div class="main-layout">
-      <!-- Left Side: Detailed Stock Grid -->
-      <section id="medicineList" class="grid"></section>
-
-      <!-- Right Side: Fast POS Billing Panel -->
-      <aside class="cart-panel">
-        <h3>🧾 Quick Billing Counter</h3>
-        <div id="cartItems" class="cart-list">
-          <p class="empty-msg">Koi medicine select nahi hui hai.</p>
+      <!-- Global Quick Analytics Bar -->
+      <div class="hidden lg:flex items-center space-x-6 bg-slate-900/60 border border-slate-800 px-4 py-1.5 rounded-xl text-xs font-mono">
+        <div>
+          <span class="text-slate-400">Total Items:</span>
+          <span id="recordCounter" class="font-bold text-indigo-400 ml-1">0</span>
         </div>
-        <div class="cart-footer">
-          <div class="total-row">
-            <span>Total Payable:</span>
-            <strong id="cartTotal">₹0.00</strong>
+        <div class="h-4 w-px bg-slate-800"></div>
+        <div>
+          <span class="text-slate-400">Expiry Alert (&lt;60d):</span>
+          <span id="expiryAlertCounter" class="font-bold text-rose-400 ml-1">0</span>
+        </div>
+        <div class="h-4 w-px bg-slate-800"></div>
+        <div>
+          <span class="text-slate-400">Low Stock Alert:</span>
+          <span id="lowStockCounter" class="font-bold text-amber-400 ml-1">0</span>
+        </div>
+      </div>
+
+      <!-- Controls & Status Bar -->
+      <div class="flex items-center space-x-3">
+        <!-- Quick Billing Hotkey Button -->
+        <button onclick="openPOSModal()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs px-3.5 py-2 rounded-xl font-semibold shadow-lg shadow-emerald-600/20 transition flex items-center gap-2">
+          <i class="fa-solid fa-bolt text-xs"></i> Express Billing [F2]
+        </button>
+
+        <!-- Dev Terminal Button -->
+        <button id="devConsoleBtn" onclick="toggleDevConsole()" class="hidden bg-rose-500/10 text-rose-300 border border-rose-500/30 text-xs px-3 py-2 rounded-xl hover:bg-rose-500/20 transition flex items-center gap-2 font-mono">
+          <i class="fa-solid fa-terminal text-xs text-rose-400"></i> Dev
+        </button>
+
+        <!-- User Logout -->
+        <button onclick="handleLogout()" class="bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-300 hover:text-white p-2 rounded-xl transition" title="Logout">
+          <i class="fa-solid fa-power-off text-sm"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Body -->
+    <main class="flex-1 p-6 max-w-[1700px] w-full mx-auto space-y-4">
+      
+      <!-- Real-time Control Toolbar -->
+      <div class="glass-panel rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
+        
+        <!-- Web Worker Background Search -->
+        <div class="relative w-full md:w-1/3">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          <input type="text" id="searchInput" oninput="handleSearchInput(this.value)" placeholder="Search 10,000+ Items (Name, Salt, Rack, Batch, Company)..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-900/90 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition font-sans" />
+        </div>
+
+        <!-- Filter Presets (Smart Filters) -->
+        <div class="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 text-xs">
+          <button onclick="applySmartFilter('ALL')" class="filter-btn active-filter px-3 py-2 rounded-xl bg-indigo-600 text-white font-medium transition">All Inventory</button>
+          <button onclick="applySmartFilter('EXPIRY')" class="filter-btn px-3 py-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 font-medium transition flex items-center gap-1.5"><i class="fa-solid fa-clock-rotate-left text-rose-400"></i> Near Expiry</button>
+          <button onclick="applySmartFilter('LOW_STOCK')" class="filter-btn px-3 py-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 font-medium transition flex items-center gap-1.5"><i class="fa-solid fa-boxes-stacked text-amber-400"></i> Low Stock</button>
+          <button onclick="applySmartFilter('SCHEDULE_H')" class="filter-btn px-3 py-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 font-medium transition flex items-center gap-1.5"><i class="fa-solid fa-file-prescription text-purple-400"></i> Schedule H/H1</button>
+        </div>
+
+        <!-- System Action Buttons -->
+        <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+          <button onclick="triggerCloudSync()" class="px-3.5 py-2 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl transition flex items-center gap-2">
+            <i class="fa-solid fa-cloud-arrow-down text-indigo-400"></i> Cloud Sync
+          </button>
+          <button onclick="exportInventoryJSON()" class="px-3.5 py-2 text-xs font-semibold text-indigo-300 bg-indigo-950/60 hover:bg-indigo-900/80 border border-indigo-800/80 rounded-xl transition flex items-center gap-2">
+            <i class="fa-solid fa-file-export text-indigo-400"></i> Export
+          </button>
+        </div>
+      </div>
+
+      <!-- High-Performance Virtual Table -->
+      <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+        <!-- Table Header (Fixed) -->
+        <div class="bg-slate-900/90 text-slate-400 text-[11px] font-mono uppercase tracking-wider grid grid-cols-12 px-6 py-3.5 border-b border-slate-800">
+          <div class="col-span-1">ID / Rack</div>
+          <div class="col-span-3">Medicine Name / Composition</div>
+          <div class="col-span-2">Batch / Expiry</div>
+          <div class="col-span-2">Manufacturer</div>
+          <div class="col-span-1 text-center">Stock</div>
+          <div class="col-span-1 text-center">Tag</div>
+          <div class="col-span-1 text-right">PTR (₹)</div>
+          <div class="col-span-1 text-right">MRP (₹)</div>
+        </div>
+
+        <!-- Virtual Scroll Viewport -->
+        <div id="virtualViewport" class="virtual-scroll-container" onscroll="onVirtualScroll(event)">
+          <div id="virtualSpacer" class="virtual-scroll-spacer"></div>
+          <div id="virtualRowsContainer" class="relative w-full"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= EXPRESS POS BILLING MODAL ================= -->
+    <div id="posModal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl hidden flex flex-col p-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl">
+            <i class="fa-solid fa-cash-register text-xl"></i>
           </div>
-          <button class="btn-print" onclick="printBill()">🖨️ Print & Send WhatsApp GST Bill</button>
+          <div>
+            <h2 class="text-lg font-bold text-white">Express Billing Counter</h2>
+            <p class="text-xs text-slate-400">Sub-second Invoice Generation • Keyboard First Interface</p>
+          </div>
         </div>
-      </aside>
-    </div>
-  </main>
+        <button onclick="closePOSModal()" class="text-slate-400 hover:text-white p-2 text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
 
-  <!-- Footer with Designer Branding -->
-  <footer class="footer">
-    <p>&copy; 2026 Bihar Medistore Pro. All Rights Reserved.</p>
-    <p class="designer-tag">Designed by <span>Abinash Singh</span></p>
-  </footer>
+      <!-- POS Main Grid -->
+      <div class="grid grid-cols-12 gap-6 flex-1 mt-6 overflow-hidden">
+        
+        <!-- Left: Search & Item Selection -->
+        <div class="col-span-7 flex flex-col space-y-4">
+          <div class="relative">
+            <i class="fa-solid fa-barcode absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+            <input type="text" id="posSearch" onkeyup="handlePOSSearch(this.value)" placeholder="Scan Barcode or Type Medicine Name [Tab to Navigate]..." class="w-full pl-12 pr-4 py-3 bg-slate-900 border border-indigo-500/50 rounded-xl text-white font-mono text-sm outline-none focus:ring-2 focus:ring-indigo-500" focus />
+          </div>
+
+          <!-- Quick Results Dropdown View -->
+          <div id="posResults" class="flex-1 bg-slate-900/80 border border-slate-800 rounded-xl p-3 overflow-y-auto space-y-2">
+            <p class="text-xs text-slate-500 text-center py-8">Start typing or scan barcode to search medicines...</p>
+          </div>
+        </div>
+
+        <!-- Right: Current Cart Invoice Summary -->
+        <div class="col-span-5 glass-panel rounded-2xl p-6 flex flex-col justify-between border border-slate-800">
+          <div>
+            <h3 class="text-xs font-mono uppercase text-slate-400 tracking-wider mb-4 border-b border-slate-800 pb-2">Active Invoice Items</h3>
+            <div id="cartItems" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+              <p class="text-xs text-slate-500 italic">No items added to cart yet.</p>
+            </div>
+          </div>
+
+          <!-- Total Calculations -->
+          <div class="border-t border-slate-800 pt-4 space-y-3">
+            <div class="flex justify-between text-xs text-slate-400 font-mono">
+              <span>Subtotal:</span>
+              <span id="posSubtotal">₹0.00</span>
+            </div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono">
+              <span>GST / Taxes (12%):</span>
+              <span id="posTax">₹0.00</span>
+            </div>
+            <div class="flex justify-between text-base font-bold text-white font-mono border-t border-slate-800 pt-2">
+              <span>Grand Total:</span>
+              <span id="posGrandTotal" class="text-emerald-400">₹0.00</span>
+            </div>
+
+            <button onclick="printInvoice()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-xl font-bold text-white shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2 text-sm mt-4">
+              <i class="fa-solid fa-print"></i> Generate & Print Receipt [Enter]
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEVELOPER TERMINAL OVERLAY -->
+    <div id="devConsoleModal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl hidden font-mono text-slate-200">
+      <div class="flex flex-col h-full max-w-5xl mx-auto p-6">
+        
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-terminal text-rose-500 text-base"></i>
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">Developer OS Control & Patch Terminal</h3>
+          </div>
+          <button onclick="toggleDevConsole()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <!-- Terminal Output -->
+        <div id="terminalLog" class="flex-1 bg-slate-900/90 border border-slate-800 rounded-xl p-4 overflow-y-auto text-xs space-y-1.5 text-emerald-400 mb-4 shadow-inner">
+          <div>[SYSTEM INIT]: Medistore Enterprise Engine Loaded. Web Worker Active.</div>
+        </div>
+
+        <!-- Action Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <button onclick="devInject10kData()" class="bg-indigo-950/50 border border-indigo-800/80 text-indigo-300 hover:bg-indigo-900/50 p-3 rounded-xl transition text-left">
+            <div class="font-bold text-xs">Inject 10,000 Medicine DB</div>
+            <div class="text-[10px] text-indigo-400/70 mt-0.5">Test Virtual DOM & Web Worker</div>
+          </button>
+
+          <button onclick="devClearCache()" class="bg-rose-950/50 border border-rose-800/80 text-rose-300 hover:bg-rose-900/50 p-3 rounded-xl transition text-left">
+            <div class="font-bold text-xs">Clear Local IndexedDB</div>
+            <div class="text-[10px] text-rose-400/70 mt-0.5">Wipe offline database cache</div>
+          </button>
+
+          <button onclick="devTriggerCloudPatch()" class="bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 p-3 rounded-xl transition text-left">
+            <div class="font-bold text-xs">Trigger Cloud REST Sync</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">Push/Fetch Supabase/Firebase API</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 
   <script src="app.js"></script>
 </body>
