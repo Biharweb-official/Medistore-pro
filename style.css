@@ -65,7 +65,7 @@ body {
   font-weight: bold;
 }
 
-/* Shortcut Helper Bar */
+/* Shortcuts Bar */
 .shortcut-bar {
   background: #1a252f;
   color: #a0aec0;
@@ -139,7 +139,7 @@ body {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 15px;
   max-height: 70vh;
   overflow-y: auto;
@@ -150,29 +150,72 @@ body {
   padding: 14px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  border-top: 3px solid #004b93;
+  border-top: 4px solid #004b93;
+  position: relative;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
 }
 
 .card h4 {
   font-size: 15px;
   color: #004b93;
-  margin-bottom: 5px;
+}
+
+/* Badges for Ethical & Generic */
+.type-tag {
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.type-tag.ethical {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.type-tag.generic {
+  background: #e8f5e9;
+  color: #1b5e20;
 }
 
 .card p {
-  font-size: 13px;
+  font-size: 12px;
   color: #555;
   margin: 3px 0;
 }
 
-.badge-sub {
-  background: #e2e8f0;
-  color: #2b6cb0;
-  font-size: 11px;
-  padding: 2px 6px;
+.batch-info {
+  background: #f8f9fa;
+  padding: 6px;
   border-radius: 4px;
-  display: inline-block;
-  margin: 4px 0;
+  margin: 6px 0;
+  font-size: 11px !important;
+  display: flex;
+  justify-content: space-between;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.mrp {
+  color: #d9534f;
+  font-weight: bold;
+}
+
+.ptr {
+  color: #28a745;
+  font-weight: bold;
 }
 
 .btn-add {
@@ -181,7 +224,7 @@ body {
   background: #28a745;
   color: white;
   border: none;
-  padding: 7px;
+  padding: 8px;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
@@ -216,7 +259,7 @@ body {
   justify-content: space-between;
   padding: 8px 0;
   border-bottom: 1px solid #eee;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .cart-footer {
