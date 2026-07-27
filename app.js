@@ -1,3 +1,68 @@
+/* ==========================================================================
+   MEDISTORE PRO - ENTERPRISE DATABASE & BATCH ENGINE (V2.0)
+   ========================================================================== */
+
+const DB_CONFIG = { name: "MedistorePro_DB", version: 1 };
+
+class LocalDB {
+  static async open() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_CONFIG.name, DB_CONFIG.version);
+      request.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains("inventory")) {
+          db.createObjectStore("inventory", { keyPath: "id", autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains("sales")) {
+          db.createObjectStore("sales", { keyPath: "invoiceNo" });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  static async saveData(storeName, item) {
+    const db = await this.open();
+    const tx = db.transaction(storeName, "readwrite");
+    tx.objectStore(storeName).put(item);
+    return tx.complete;
+  }
+
+  static async getAll(storeName) {
+    const db = await this.open();
+    return new Promise((resolve) => {
+      const tx = db.transaction(storeName, "readonly");
+      const request = tx.objectStore(storeName).getAll();
+      request.onsuccess = () => resolve(request.result);
+    });
+  }
+}
+
+/* ==========================================================================
+   EXPIRY & GST UTILITIES
+   ========================================================================== */
+
+function validateMedicineExpiry(expiryDateStr) {
+  const today = new Date();
+  const expDate = new Date(expiryDateStr);
+  const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+  
+  if (diffDays <= 0) return { status: "EXPIRED", color: "text-red-500", safe: false };
+  if (diffDays <= 90) return { status: `EXPIRING SOON (${diffDays} days)`, color: "text-amber-500", safe: true };
+  return { status: "SAFE", color: "text-emerald-500", safe: true };
+}
+
+function calculateGST(amount, gstPercent = 12) {
+  const basePrice = amount / (1 + gstPercent / 100);
+  const totalTax = amount - basePrice;
+  return {
+    basePrice: basePrice.toFixed(2),
+    cgst: (totalTax / 2).toFixed(2),
+    sgst: (totalTax / 2).toFixed(2),
+    totalTax: totalTax.toFixed(2)
+  };
+}
 /**
  * Medistore OS - Enterprise Medical ERP Engine (v2.0)
  * Modules Added: Print Engine, Profit Analytics, Cloud REST Adapter, Batch Expiry Returns
@@ -131,7 +196,39 @@ function handleSearchInput(query) {
     });
   }
 }
+/* ==========================================================================
+   BARCODE SCANNER ENGINE & ENTERPRISE UPGRADES
+   ========================================================================== */
+let barcodeBuffer = "";
+let barcodeTimer = null;
 
+document.addEventListener("keydown", (e) => {
+  // Agar user kisi normal text field me type kar raha hai toh ignore karein
+  if (e.target.tagName === "INPUT" && e.target.id !== "barcodeScannerInput") return;
+
+  if (e.key === "Enter") {
+    if (barcodeBuffer.length >= 3) {
+      handleBarcodeScan(barcodeBuffer);
+      barcodeBuffer = "";
+    }
+  } else if (e.key.length === 1) {
+    barcodeBuffer += e.key;
+    clearTimeout(barcodeTimer);
+    barcodeTimer = setTimeout(() => { barcodeBuffer = ""; }, 200);
+  }
+});
+
+function handleBarcodeScan(code) {
+  console.log("⚡ Barcode Scanned:", code);
+  if (typeof STATE !== "undefined" && STATE.inventory) {
+    const match = STATE.inventory.find(item => item.barcode === code || item.id == code);
+    if (match) {
+      alert(`✅ Item Scanned & Found: ${match.name}`);
+    } else {
+      console.warn("Barcode item not found in inventory.");
+    }
+  }
+}
 function applySmartFilter(filterType) {
   STATE.activeFilter = filterType;
   
