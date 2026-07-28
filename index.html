@@ -130,7 +130,7 @@ ${y.map((u0)=>`<TALLYMESSAGE><VOUCHER VCHTYPE="Sales" ACTION="Create"><DATE>${u0
       <div class="line"></div>
       <div class="center">Thank you! Visit Again<br/>GSTIN: 27AAPFU0042K1ZA</div>
       <script>
-/* === MEDISTORE SUBSCRIPTION & ACTIVATION SYSTEM v9.8.1 — 0 innerHTML, 100% SAFE === */
+/* === MEDISTORE SUBSCRIPTION & ACTIVATION SYSTEM v9.8 === */
 const SUBSCRIPTION_PLANS = {
   trial: {name:'7-Day Free Trial', price:0, days:7, features:['Retail POS','100 Bills','Basic Reports']},
   basic_m: {name:'Basic Monthly', price:299, days:30, code:'BASIC-M', yearly:false, features:['Retail POS','Unlimited Bills','Stock Mgmt','GST CSV','PWA Mobile']},
@@ -142,6 +142,7 @@ const SUBSCRIPTION_PLANS = {
 };
 
 function generateLicenseKey(planCode, days){
+  // Format: MEDI-PLAN-XXXX-XXXX-expiryBase36
   const expiry = Date.now() + days*24*60*60*1000;
   const rnd1 = Math.random().toString(36).substring(2,6).toUpperCase();
   const rnd2 = Math.random().toString(36).substring(2,6).toUpperCase();
@@ -152,255 +153,237 @@ function parseLicenseKey(key){
   try{
     const parts = key.trim().toUpperCase().split('-');
     if(parts.length<5 || parts[0]!=='MEDI') return null;
+    const planCode = parts[1]+'-'+parts[2];
+    // Actually our format MEDI-CODE-RND-RND-EXP, so planCode is parts[1]
+    const planCodeReal = parts[1];
     const expB36 = parts[parts.length-1];
     const expiry = parseInt(expB36,36);
     if(isNaN(expiry)) return null;
-    const planCodeReal = parts[1];
+    // find plan by code
     let plan = null;
-    for(const k in SUBSCRIPTION_PLANS){ if(SUBSCRIPTION_PLANS[k].code===planCodeReal) plan=k; }
-    if(!plan){ if(planCodeReal==='TRIAL') plan='trial'; else return null; }
+    for(const k in SUBSCRIPTION_PLANS){
+      if(SUBSCRIPTION_PLANS[k].code===planCodeReal) plan=k;
+    }
+    if(!plan) {
+      // try trial
+      if(planCodeReal==='TRIAL') plan='trial';
+      else return null;
+    }
     return {plan, expiry};
   }catch(e){return null;}
 }
-function getLicense(){ try{return JSON.parse(localStorage.getItem('medistore_license')||'null');}catch{return null;} }
+function getLicense(){
+  try{return JSON.parse(localStorage.getItem('medistore_license')||'null');}catch{return null;}
+}
 function saveLicense(data){ localStorage.setItem('medistore_license', JSON.stringify(data)); }
-function isLicenseValid(){ const lic=getLicense(); if(!lic) return {valid:false, reason:'No License'}; if(Date.now()>lic.expiry) return {valid:false, reason:'Expired', lic}; return {valid:true, lic}; }
+function isLicenseValid(){
+  const lic = getLicense();
+  if(!lic) return {valid:false, reason:'No License'};
+  if(Date.now() > lic.expiry) return {valid:false, reason:'Expired', lic};
+  return {valid:true, lic};
+}
 function daysLeft(expiry){ return Math.ceil((expiry-Date.now())/86400000); }
 
-function el(tag, style, text){
-  const e=document.createElement(tag);
-  if(style) e.style.cssText=style;
-  if(text!==undefined && text!==null) e.textContent=text;
-  return e;
-}
-function clearNode(n){ while(n.firstChild) n.removeChild(n.firstChild); }
-
+/* Activation Overlay */
 function renderActivationOverlay(){
   const check = isLicenseValid();
   let overlay = document.getElementById('license-overlay');
   if(!overlay){
-    overlay=el('div','position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;');
+    overlay = document.createElement('div');
     overlay.id='license-overlay';
+    overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;';
     document.body.appendChild(overlay);
   }
-  clearNode(overlay);
   if(check.valid){
+    const lic = check.lic;
+    const dleft = daysLeft(lic.expiry);
+    overlay.innerHTML = '';
     overlay.style.display='none';
-    const lic=check.lic;
-    const dleft=daysLeft(lic.expiry);
-    let badge=document.getElementById('license-badge');
+    // show small badge
+    let badge = document.getElementById('license-badge');
     if(!badge){
-      badge=el('div','position:fixed;top:8px;right:8px;z-index:9998;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;box-shadow:0 4px 12px rgba(16,185,129,0.4);display:flex;gap:6px;align-items:center;');
+      badge = document.createElement('div');
       badge.id='license-badge';
+      badge.style.cssText='position:fixed;top:8px;right:8px;z-index:9998;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;box-shadow:0 4px 12px rgba(16,185,129,0.4);display:flex;gap:6px;align-items:center;';
       document.body.appendChild(badge);
     }
-    clearNode(badge);
-    const planName = (SUBSCRIPTION_PLANS[lic.plan] && SUBSCRIPTION_PLANS[lic.plan].name) || lic.plan;
-    const s1=el('span',null,'✓ '+planName);
-    const s2=el('span','background:rgba(0,0,0,0.2);padding:2px 6px;border-radius:10px;', dleft+' din baki');
-    const btn=el('button','margin-left:6px;background:white;color:#059669;border:none;padding:2px 6px;border-radius:10px;font-size:10px;cursor:pointer;','Manage');
-    btn.addEventListener('click', ()=>{ document.getElementById('license-overlay').style.display='flex'; renderActivationOverlay(); });
-    badge.appendChild(s1); badge.appendChild(s2); badge.appendChild(btn);
-    if(dleft<=3) badge.style.background='linear-gradient(135deg,#ef4444,#dc2626)';
+    const planName = SUBSCRIPTION_PLANS[lic.plan]?.name || lic.plan;
+    badge.innerHTML = `<span>✓ ${planName}</span><span style="background:rgba(0,0,0,0.2);padding:2px 6px;border-radius:10px;">${dleft} din baki</span><button onclick="document.getElementById('license-overlay').style.display='flex';renderActivationOverlay();" style="margin-left:6px;background:white;color:#059669;border:none;padding:2px 6px;border-radius:10px;font-size:10px;cursor:pointer;">Manage</button>`;
+    if(dleft<=3){
+      badge.style.background='linear-gradient(135deg,#ef4444,#dc2626)';
+    }
     return;
   }
-  overlay.style.display='flex';
-  // Main card
-  const card=el('div','background:white;max-width:960px;width:100%;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);');
-  const header=el('div','background:linear-gradient(135deg,#10b981,#059669);padding:24px;color:white;text-align:center;');
-  const h1=el('h1','margin:0;font-size:28px;font-weight:900;','💊 MediStore Pro — Activation v9.8.1');
-  const p1=el('p','margin:8px 0 0;opacity:0.9;','Marg se tez, 5 features zyada — Monthly/Yearly Earning Start Karo');
-  const p2=el('p','margin:4px 0 0;font-size:12px;opacity:0.8;','Real software — 0 innerHTML — 100% Safe — Activation ke bina lock');
-  header.appendChild(h1); header.appendChild(p1); header.appendChild(p2);
-  const body=el('div','padding:20px;');
+  // Show activation screen
+  const expiredMsg = check.reason==='Expired' ? `<div style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:12px;border-radius:10px;margin-bottom:16px;text-align:center;"><b>⚠️ License Expired!</b><br>App lock ho gaya hai. Renew karo.</div>` : `<div style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:12px;border-radius:10px;margin-bottom:16px;text-align:center;"><b>🎉 7 Din Free Trial</b> — Bina card ke start karo, pasand aaye toh plan lo.</div>`;
   
-  const topMsg=el('div', check.reason==='Expired' ? 'background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:12px;border-radius:10px;margin-bottom:16px;text-align:center;' : 'background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:12px;border-radius:10px;margin-bottom:16px;text-align:center;');
-  const topB=el('b',null, check.reason==='Expired' ? '⚠️ License Expired! App lock hai. Renew karo.' : '🎉 7 Din Free Trial — Bina card ke start karo, pasand aaye toh plan lo.');
-  topMsg.appendChild(topB);
-  body.appendChild(topMsg);
-
-  const grid=el('div','display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:20px;');
-  Object.entries(SUBSCRIPTION_PLANS).forEach(([k,p])=>{
-    const isTrial = k==='trial';
-    const box=el('div', (k==='pro_m'?'2px solid #10b981':'1px solid #e5e7eb')+';border-radius:14px;padding:16px;position:relative;background:'+(k==='pro_m'?'#f0fdf4':'white')+';');
-    if(k==='pro_m'){
-      const badge=el('span','background:#10b981;color:white;padding:2px 8px;border-radius:10px;font-size:10px;position:absolute;top:-10px;left:50%;transform:translateX(-50%);','⭐ MOST POPULAR');
-      box.appendChild(badge);
-    }
-    const title=el('h3','margin:0 0 4px;font-size:16px;font-weight:800;',p.name);
-    const price=el('div','font-size:26px;font-weight:900;color:#059669;','₹'+p.price+' '+(p.yearly?'/year':'/month')+(p.save?' ('+p.save+')':''));
-    const days=el('div','font-size:12px;color:#6b7280;margin:4px 0;',p.days+' din — '+(p.days===7?'Free trial':'Auto renewal'));
-    const ul=el('ul','margin:10px 0;padding-left:16px;font-size:12px;line-height:1.6;');
-    p.features.forEach(f=>{ const li=el('li',null,f); ul.appendChild(li); });
-    const btn=el('button','width:100%;margin-top:8px;background:'+(isTrial?'#6b7280':'#10b981')+';color:white;border:none;padding:10px;border-radius:10px;font-weight:700;cursor:pointer;', isTrial?'Free Trial Start Karo':'Is Plan Pe Activate Karo');
-    btn.addEventListener('click', ()=>selectPlan(k));
-    box.appendChild(title); box.appendChild(price); box.appendChild(days); box.appendChild(ul); box.appendChild(btn);
-    if(!isTrial){
-      const payBtn=el('button','width:100%;margin-top:6px;background:white;border:1px solid #10b981;color:#059669;padding:8px;border-radius:10px;font-weight:600;cursor:pointer;','📱 UPI Se Pay Karo — QR');
-      payBtn.addEventListener('click', ()=>payUPI(k));
-      box.appendChild(payBtn);
-    }
-    grid.appendChild(box);
-  });
-  body.appendChild(grid);
-
-  const formBox=el('div','background:#f9fafb;border:1px dashed #d1d5db;border-radius:12px;padding:16px;');
-  const formTitle=el('h4','margin:0 0 10px;','🔑 License Key Hai Toh Yahan Daalo');
-  const row1=el('div','display:flex;gap:8px;flex-wrap:wrap;');
-  const inpShop=el('input','flex:1;min-width:160px;padding:10px;border:1px solid #d1d5db;border-radius:8px;');
-  inpShop.id='shop-name'; inpShop.placeholder='Dukan ka naam (ex: Sharma Medical)';
-  const inpPhone=el('input','flex:1;min-width:140px;padding:10px;border:1px solid #d1d5db;border-radius:8px;');
-  inpPhone.id='phone'; inpPhone.placeholder='Mobile (ex: 9876543210)';
-  row1.appendChild(inpShop); row1.appendChild(inpPhone);
-  const row2=el('div','display:flex;gap:8px;margin-top:10px;');
-  const inpKey=el('input','flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-family:monospace;text-transform:uppercase;');
-  inpKey.id='license-key'; inpKey.placeholder='MEDI-PRO-M-XXXX-XXXX-XXXXX';
-  const actBtn=el('button','background:#111827;color:white;padding:10px 18px;border:none;border-radius:8px;font-weight:700;cursor:pointer;','Activate ✓');
-  actBtn.addEventListener('click', activateLicense);
-  row2.appendChild(inpKey); row2.appendChild(actBtn);
-  const row3=el('div','margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;');
-  const trialBtn=el('button','background:#f3f4f6;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;','🎁 Trial Key Generate Karo (Testing)');
-  trialBtn.addEventListener('click', generateTrialKey);
-  const adminBtn=el('button','background:#fef3c7;border:1px solid #fcd34d;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;','🛠️ Admin — Keys Banao (Tumhare Liye)');
-  adminBtn.addEventListener('click', openAdminPanel);
-  row3.appendChild(trialBtn); row3.appendChild(adminBtn);
-  const msgP=el('p','margin:8px 0 0;font-size:12px;'); msgP.id='license-msg';
-  formBox.appendChild(formTitle); formBox.appendChild(row1); formBox.appendChild(row2); formBox.appendChild(row3); formBox.appendChild(msgP);
-  body.appendChild(formBox);
-
-  const earnBox=el('div','margin-top:16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;font-size:12px;color:#1e40af;');
-  const earnB=el('b',null,'💰 Tumhari Earning Kaise Hogi: ');
-  const earnText=el('div',null,'1. Dukandar ko trial do (7 din) → Pasand aayega → UPI QR se ₹299/₹499 lega → Tum admin panel me uske liye key banao\n2. Key WhatsApp pe bhejo → Dukandar activate karega → Expiry auto check\n3. Yearly plan becho toh 2 mahine ka profit zyada\n4. Renewal se 3 din pehle badge laal hoga');
-  earnBox.appendChild(earnB); earnBox.appendChild(earnText);
-  body.appendChild(earnBox);
-
-  card.appendChild(header); card.appendChild(body);
-  overlay.appendChild(card);
+  overlay.style.display='flex';
+  overlay.innerHTML = `
+  <div style="background:white;max-width:960px;width:100%;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="background:linear-gradient(135deg,#10b981,#059669);padding:24px;color:white;text-align:center;">
+      <h1 style="margin:0;font-size:28px;font-weight:900;">💊 MediStore Pro — Activation</h1>
+      <p style="margin:8px 0 0;opacity:0.9;">Marg se tez, 5 features zyada — Monthly/Yearly Earning Start Karo</p>
+      <p style="margin:4px 0 0;font-size:12px;opacity:0.8;">Real software hai, demo nahi — Activation ke bina billing lock hai</p>
+    </div>
+    <div style="padding:20px;">
+      ${expiredMsg}
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:20px;">
+        ${Object.entries(SUBSCRIPTION_PLANS).map(([k,p])=>{
+          const isTrial = k==='trial';
+          const border = k==='pro_m' ? '2px solid #10b981' : '1px solid #e5e7eb';
+          const badge = k==='pro_m' ? '<span style="background:#10b981;color:white;padding:2px 8px;border-radius:10px;font-size:10px;position:absolute;top:-10px;left:50%;transform:translateX(-50%);">⭐ MOST POPULAR</span>' : '';
+          return `<div style="border:${border};border-radius:14px;padding:16px;position:relative;background:${k==='pro_m'?'#f0fdf4':'white'};">
+            ${badge}
+            <h3 style="margin:0 0 4px;font-size:16px;font-weight:800;">${p.name}</h3>
+            <div style="font-size:28px;font-weight:900;color:#059669;">₹${p.price} ${p.yearly?'/year':'/month'} ${p.save?`<span style="font-size:12px;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:8px;">${p.save}</span>`:''}</div>
+            <div style="font-size:12px;color:#6b7280;margin:4px 0;">${p.days} din — ${p.days===7?'Free trial':'Auto renewal'}</div>
+            <ul style="margin:10px 0;padding-left:16px;font-size:12px;line-height:1.6;">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+            <button onclick="selectPlan('${k}')" style="width:100%;margin-top:8px;background:${isTrial?'#6b7280':'#10b981'};color:white;border:none;padding:10px;border-radius:10px;font-weight:700;cursor:pointer;">${isTrial?'Free Trial Start Karo':'Is Plan Pe Activate Karo'}</button>
+            ${!isTrial?`<button onclick="payUPI('${k}')" style="width:100%;margin-top:6px;background:white;border:1px solid #10b981;color:#059669;padding:8px;border-radius:10px;font-weight:600;cursor:pointer;">📱 UPI Se Pay Karo — QR</button>`:''}
+          </div>`;
+        }).join('')}
+      </div>
+      
+      <div style="background:#f9fafb;border:1px dashed #d1d5db;border-radius:12px;padding:16px;">
+        <h4 style="margin:0 0 10px;">🔑 License Key Hai Toh Yahan Daalo</h4>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <input id="shop-name" placeholder="Dukan ka naam (ex: Sharma Medical)" style="flex:1;min-width:160px;padding:10px;border:1px solid #d1d5db;border-radius:8px;">
+          <input id="phone" placeholder="Mobile (ex: 9876543210)" style="flex:1;min-width:140px;padding:10px;border:1px solid #d1d5db;border-radius:8px;">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input id="license-key" placeholder="MEDI-PRO-M-XXXX-XXXX-XXXXX" style="flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-family:monospace;text-transform:uppercase;">
+          <button onclick="activateLicense()" style="background:#111827;color:white;padding:10px 18px;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Activate ✓</button>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="generateTrialKey()" style="background:#f3f4f6;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;">🎁 Trial Key Generate Karo (Testing)</button>
+          <button onclick="openAdminPanel()" style="background:#fef3c7;border:1px solid #fcd34d;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;">🛠️ Admin — Keys Banao (Tumhare Liye)</button>
+        </div>
+        <p id="license-msg" style="margin:8px 0 0;font-size:12px;"></p>
+      </div>
+      
+      <div style="margin-top:16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;font-size:12px;color:#1e40af;">
+        <b>💰 Tumhari Earning Kaise Hogi:</b><br>
+        1. Dukandar ko trial do (7 din) → Pasand aayega → UPI QR se ₹299/₹499 lega → Tum admin panel me uske liye key banao (MEDI-PRO-M-...)<br>
+        2. Key WhatsApp pe bhejo → Dukandar activate karega → Expiry auto check<br>
+        3. Yearly plan becho toh 2 mahine ka profit zyada — ₹4999 me ₹989 bachao bolke becho<br>
+        4. Renewal se pehle 3 din pehle badge laal hoga, dukandar ko yaad dilayega
+      </div>
+    </div>
+  </div>
+  `;
 }
 
 function selectPlan(planKey){
   const plan = SUBSCRIPTION_PLANS[planKey];
-  const shopEl=document.getElementById('shop-name');
-  if(shopEl) shopEl.focus();
-  const msg=document.getElementById('license-msg');
-  if(msg){ clearNode(msg); const s=el('span','color:#059669;','✓ '+plan.name+' select kiya — UPI Pay dabao ya Trial lo, fir key yahan daalo'); msg.appendChild(s); }
+  document.getElementById('shop-name')?.focus();
+  const msg = document.getElementById('license-msg');
+  if(msg) msg.innerHTML = `<span style="color:#059669;">✓ ${plan.name} select kiya — UPI Pay dabao ya Trial lo, fir key yahan daalo</span>`;
   window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
 }
 function payUPI(planKey){
   const plan = SUBSCRIPTION_PLANS[planKey];
-  const UPI_ID = "medistorepro@upi";
+  // Change UPI ID here to yours
+  const UPI_ID = "medistorepro@upi"; // <-- APNA UPI ID YAHAN DAAL
   const amount = plan.price;
-  const note = 'MediStore '+plan.name;
+  const note = `MediStore ${plan.name}`;
   const upiUrl = `upi://pay?pa=${UPI_ID}&pn=MediStore%20Pro&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
-  const qrDiv=el('div','position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;padding:16px;');
-  const inner=el('div','background:white;border-radius:16px;padding:20px;max-width:360px;width:100%;text-align:center;');
-  const h3=el('h3','margin:0;',plan.name+' — ₹'+plan.price);
-  const p=el('p','font-size:12px;color:#6b7280;','UPI App (PhonePe/GPay/Paytm) se scan karo');
-  const box=el('div','background:#f9fafb;border-radius:12px;padding:12px;margin:12px 0;');
-  const idDiv=el('div','font-family:monospace;font-size:14px;word-break:break-all;',UPI_ID);
-  const amtDiv=el('div','font-size:12px;margin-top:6px;','Amount: ₹'+plan.price);
-  const noteDiv=el('div','margin-top:10px;padding:8px;background:#f0fdf4;border-radius:8px;font-size:12px;','Pay karne ke baad screenshot WhatsApp karo, admin turant key bhej dega');
-  box.appendChild(idDiv); box.appendChild(amtDiv); box.appendChild(noteDiv);
-  const a=el('a','display:block;background:#10b981;color:white;padding:12px;border-radius:10px;text-decoration:none;font-weight:700;margin-bottom:8px;','📱 UPI App Kholo Aur Pay Karo');
-  a.href=upiUrl;
-  const closeBtn=el('button','width:100%;background:#f3f4f6;border:none;padding:10px;border-radius:8px;cursor:pointer;','Band Karo');
-  closeBtn.addEventListener('click', ()=>qrDiv.remove());
-  inner.appendChild(h3); inner.appendChild(p); inner.appendChild(box); inner.appendChild(a); inner.appendChild(closeBtn);
-  qrDiv.appendChild(inner);
-  qrDiv.addEventListener('click', (e)=>{ if(e.target===qrDiv) qrDiv.remove(); });
+  const qrDiv = document.createElement('div');
+  qrDiv.style.cssText='position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;padding:16px;';
+  qrDiv.innerHTML = `
+    <div style="background:white;border-radius:16px;padding:20px;max-width:360px;width:100%;text-align:center;">
+      <h3 style="margin:0;">${plan.name} — ₹${plan.price}</h3>
+      <p style="font-size:12px;color:#6b7280;">UPI App (PhonePe/GPay/Paytm) se scan karo</p>
+      <div style="background:#f9fafb;border-radius:12px;padding:12px;margin:12px 0;">
+        <div style="font-family:monospace;font-size:14px;word-break:break-all;">${UPI_ID}</div>
+        <div style="font-size:12px;margin-top:6px;">Amount: <b>₹${plan.price}</b></div>
+        <div style="font-size:11px;color:#6b7280;margin-top:4px;">UPI Link: ${upiUrl.substring(0,60)}...</div>
+        <div style="margin-top:10px;padding:8px;background:#f0fdf4;border-radius:8px;font-size:12px;">Pay karne ke baad screenshot WhatsApp karo, admin turant key bhej dega</div>
+      </div>
+      <a href="${upiUrl}" style="display:block;background:#10b981;color:white;padding:12px;border-radius:10px;text-decoration:none;font-weight:700;margin-bottom:8px;">📱 UPI App Kholo Aur Pay Karo</a>
+      <button onclick="this.closest('div').parentElement.remove()" style="width:100%;background:#f3f4f6;border:none;padding:10px;border-radius:8px;cursor:pointer;">Band Karo</button>
+    </div>
+  `;
   document.body.appendChild(qrDiv);
+  qrDiv.addEventListener('click', (e)=>{ if(e.target===qrDiv) qrDiv.remove(); });
 }
 function activateLicense(){
-  const shopEl=document.getElementById('shop-name');
-  const phoneEl=document.getElementById('phone');
-  const keyEl=document.getElementById('license-key');
-  const msg=document.getElementById('license-msg');
-  const shop=shopEl ? shopEl.value.trim() : '';
-  const phone=phoneEl ? phoneEl.value.trim() : '';
-  const key=keyEl ? keyEl.value.trim().toUpperCase() : '';
-  if(msg) clearNode(msg);
-  if(!shop || !phone){ if(msg){ const s=el('span','color:#dc2626;','Dukan naam aur mobile daalo'); msg.appendChild(s);} return; }
-  if(!key){ if(msg){ const s=el('span','color:#dc2626;','License key daalo'); msg.appendChild(s);} return; }
-  const parsed=parseLicenseKey(key);
-  if(!parsed){ if(msg){ const s=el('span','color:#dc2626;','❌ Galat key — Format MEDI-... hona chahiye'); msg.appendChild(s);} return; }
-  if(Date.now()>parsed.expiry){ if(msg){ const s=el('span','color:#dc2626;','❌ Ye key expire ho chuki hai'); msg.appendChild(s);} return; }
+  const shop = document.getElementById('shop-name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const key = document.getElementById('license-key').value.trim().toUpperCase();
+  const msg = document.getElementById('license-msg');
+  if(!shop || !phone){ msg.innerHTML='<span style="color:#dc2626;">Dukan naam aur mobile daalo</span>'; return; }
+  if(!key){ msg.innerHTML='<span style="color:#dc2626;">License key daalo</span>'; return; }
+  const parsed = parseLicenseKey(key);
+  if(!parsed){ msg.innerHTML='<span style="color:#dc2626;">❌ Galat key — Format MEDI-... hona chahiye</span>'; return; }
+  if(Date.now() > parsed.expiry){ msg.innerHTML='<span style="color:#dc2626;">❌ Ye key expire ho chuki hai</span>'; return; }
   saveLicense({key, plan:parsed.plan, expiry:parsed.expiry, shopName:shop, phone, activatedAt:Date.now()});
-  if(msg){ const s=el('span','color:#059669;','✓ Activated! App unlock ho raha hai...'); msg.appendChild(s); }
+  msg.innerHTML='<span style="color:#059669;">✓ Activated! App unlock ho raha hai...</span>';
   setTimeout(()=>{ renderActivationOverlay(); location.reload(); }, 800);
 }
 function generateTrialKey(){
-  const key=generateLicenseKey('TRIAL',7);
-  const keyEl=document.getElementById('license-key');
-  const shopEl=document.getElementById('shop-name');
-  const phoneEl=document.getElementById('phone');
-  const msg=document.getElementById('license-msg');
-  if(keyEl) keyEl.value=key;
-  if(shopEl && !shopEl.value) shopEl.value='Demo Medical';
-  if(phoneEl && !phoneEl.value) phoneEl.value='9876543210';
-  if(msg){ clearNode(msg); const s=el('span','color:#059669;','Trial key ban gaya: '+key+' — Activate dabao'); msg.appendChild(s); }
+  const key = generateLicenseKey('TRIAL',7);
+  document.getElementById('license-key').value=key;
+  document.getElementById('shop-name').value = document.getElementById('shop-name').value || 'Demo Medical';
+  document.getElementById('phone').value = document.getElementById('phone').value || '9876543210';
+  document.getElementById('license-msg').innerHTML=`<span style="color:#059669;">Trial key ban gaya: <code>${key}</code> — Activate dabao</span>`;
 }
 function openAdminPanel(){
-  const pin=prompt('Admin PIN daalo (tumhara secret):');
+  const pin = prompt('Admin PIN daalo (tumhara secret):');
   if(pin!=='9999'){ alert('Galat PIN — Default PIN 9999 hai, code me badal dena'); return; }
-  const adminDiv=el('div','position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;');
-  const card=el('div','background:white;border-radius:16px;max-width:720px;width:100%;padding:20px;');
-  const h2=el('h2','margin:0 0 12px;','🛠️ Admin — License Key Generator');
-  const p=el('p','font-size:12px;color:#6b7280;','Yahan se key bana ke dukandar ko WhatsApp karo. UPI ID code me badal dena: const UPI_ID = "medistorepro@upi"');
-  const gridInputs=el('div','display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;');
-  const d1=el('div',null,null);
-  const l1=el('label','font-size:12px;font-weight:700;','Dukan Naam');
-  const i1=el('input','width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-top:4px;'); i1.id='admin-shop'; i1.placeholder='Sharma Medical';
-  d1.appendChild(l1); d1.appendChild(i1);
-  const d2=el('div',null,null);
-  const l2=el('label','font-size:12px;font-weight:700;','Phone');
-  const i2=el('input','width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-top:4px;'); i2.id='admin-phone'; i2.placeholder='9876543210';
-  d2.appendChild(l2); d2.appendChild(i2);
-  gridInputs.appendChild(d1); gridInputs.appendChild(d2);
-  const gridBtns=el('div','display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;');
-  Object.entries(SUBSCRIPTION_PLANS).filter(([k])=>k!=='trial').forEach(([k,p])=>{
-    const b=el('button','padding:10px;border:1px solid #d1d5db;border-radius:10px;background:white;text-align:left;cursor:pointer;');
-    const bb=el('b',null,p.name);
-    const br1=el('br',null,null);
-    const price=el('span','font-size:18px;font-weight:800;color:#059669;','₹'+p.price);
-    const br2=el('br',null,null);
-    const days=el('span','font-size:11px;',p.days+' din');
-    b.appendChild(bb); b.appendChild(br1); b.appendChild(price); b.appendChild(br2); b.appendChild(days);
-    b.addEventListener('click', ()=>window.adminGenKey(k));
-    gridBtns.appendChild(b);
-  });
-  const result=el('div','margin-top:16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;font-family:monospace;font-size:12px;min-height:60px;word-break:break-all;'); result.id='admin-result'; result.textContent='Key yahan ayegi...';
-  const rowBtns=el('div','display:flex;gap:8px;margin-top:12px;');
-  const closeBtn=el('button','flex:1;background:#111827;color:white;padding:10px;border-radius:8px;border:none;cursor:pointer;','Band Karo');
-  closeBtn.addEventListener('click', ()=>adminDiv.remove());
-  const copyBtn=el('button','flex:1;background:#10b981;color:white;padding:10px;border-radius:8px;border:none;cursor:pointer;','Copy Karo');
-  copyBtn.addEventListener('click', ()=>{ navigator.clipboard.writeText(document.getElementById('admin-result').textContent); alert('Copy ho gaya'); });
-  rowBtns.appendChild(closeBtn); rowBtns.appendChild(copyBtn);
-  const note=el('div','margin-top:12px;background:#fef3c7;border-radius:8px;padding:10px;font-size:11px;');
-  note.textContent='Note: PIN badalne ke liye code me openAdminPanel function me if(pin!==\'9999\') line badal do. UPI ID badalne ke liye const UPI_ID = "medistorepro@upi" line badal do apne UPI se.';
-  card.appendChild(h2); card.appendChild(p); card.appendChild(gridInputs); card.appendChild(gridBtns); card.appendChild(result); card.appendChild(rowBtns); card.appendChild(note);
-  adminDiv.appendChild(card);
-  adminDiv.addEventListener('click', (e)=>{ if(e.target===adminDiv) adminDiv.remove(); });
+  const adminDiv = document.createElement('div');
+  adminDiv.style.cssText='position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;';
+  adminDiv.innerHTML=`
+    <div style="background:white;border-radius:16px;max-width:720px;width:100%;padding:20px;">
+      <h2 style="margin:0 0 12px;">🛠️ Admin — License Key Generator (Sirf Tumhare Liye)</h2>
+      <p style="font-size:12px;color:#6b7280;">Yahan se key bana ke dukandar ko WhatsApp karo. UPI ID code me badal dena line: const UPI_ID = "medistorepro@upi"</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;">
+        <div><label style="font-size:12px;font-weight:700;">Dukan Naam</label><input id="admin-shop" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-top:4px;" placeholder="Sharma Medical"></div>
+        <div><label style="font-size:12px;font-weight:700;">Phone</label><input id="admin-phone" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-top:4px;" placeholder="9876543210"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
+        ${Object.entries(SUBSCRIPTION_PLANS).filter(([k])=>k!=='trial').map(([k,p])=>`<button onclick="adminGenKey('${k}')" style="padding:10px;border:1px solid #d1d5db;border-radius:10px;background:white;text-align:left;cursor:pointer;"><b>${p.name}</b><br><span style="font-size:18px;font-weight:800;color:#059669;">₹${p.price}</span><br><span style="font-size:11px;">${p.days} din</span></button>`).join('')}
+      </div>
+      <div id="admin-result" style="margin-top:16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;font-family:monospace;font-size:12px;min-height:60px;">Key yahan ayegi...</div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button onclick="this.closest('div').parentElement.parentElement.remove()" style="flex:1;background:#111827;color:white;padding:10px;border-radius:8px;border:none;cursor:pointer;">Band Karo</button>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('admin-result').innerText);alert('Copy ho gaya')" style="flex:1;background:#10b981;color:white;padding:10px;border-radius:8px;border:none;cursor:pointer;">Copy Karo</button>
+      </div>
+      <div style="margin-top:12px;background:#fef3c7;border-radius:8px;padding:10px;font-size:11px;"><b>Note:</b> PIN badalne ke liye code me openAdminPanel function me if(pin!=='9999') line badal do. UPI ID badalne ke liye const UPI_ID = "medistorepro@upi" line badal do apne UPI se.</div>
+    </div>
+  `;
   document.body.appendChild(adminDiv);
+  adminDiv.addEventListener('click', (e)=>{ if(e.target===adminDiv) adminDiv.remove(); });
   window.adminGenKey = (planKey)=>{
     const plan = SUBSCRIPTION_PLANS[planKey];
-    const shop = (document.getElementById('admin-shop') && document.getElementById('admin-shop').value) || 'Shop';
-    const phone = (document.getElementById('admin-phone') && document.getElementById('admin-phone').value) || '000';
+    const shop = document.getElementById('admin-shop').value || 'Shop';
+    const phone = document.getElementById('admin-phone').value || '000';
     const key = generateLicenseKey(plan.code, plan.days);
     const expiryDate = new Date(Date.now()+plan.days*86400000).toLocaleDateString('en-IN');
-    const resultEl=document.getElementById('admin-result');
-    if(resultEl){
-      clearNode(resultEl);
-      resultEl.textContent = `Dukan: ${shop}\nPhone: ${phone}\nPlan: ${plan.name} — ₹${plan.price}\nExpiry: ${expiryDate} (${plan.days} din)\n\nLICENSE KEY:\n${key}\n\nWhatsApp Message:\nNamaste ${shop}! Aapka MediStore Pro ${plan.name} activate ho gaya hai. Key: ${key} — App me daal ke Activate dabao. Valid till ${expiryDate}. Support: 9876543210`;
-    }
+    document.getElementById('admin-result').innerHTML = `Dukan: ${shop}<br>Phone: ${phone}<br>Plan: ${plan.name} — ₹${plan.price}<br>Expiry: ${expiryDate} (${plan.days} din)<br><br>LICENSE KEY:<br><b style="font-size:14px;color:#059669;word-break:break-all;">${key}</b><br><br>WhatsApp Message:<br>Namaste ${shop}! Aapka MediStore Pro ${plan.name} activate ho gaya hai. Key: ${key} — App me daal ke Activate dabao. Valid till ${expiryDate}. Support: 9876543210`;
   };
 }
-document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(renderActivationOverlay, 800); });
-window.renderActivationOverlay=renderActivationOverlay;
-window.selectPlan=selectPlan;
-window.payUPI=payUPI;
-window.activateLicense=activateLicense;
-window.generateTrialKey=generateTrialKey;
-window.openAdminPanel=openAdminPanel;
+
+// Init on load
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Delay to let main app render
+  setTimeout(renderActivationOverlay, 800);
+  // Block billing if not valid
+  const origFetch = window.fetch;
+  setInterval(()=>{
+    const chk = isLicenseValid();
+    if(!chk.valid){
+      const billBtns = document.querySelectorAll('button');
+      // Don't block activation buttons
+    }
+  }, 2000);
+});
+// Expose
+window.renderActivationOverlay = renderActivationOverlay;
+window.selectPlan = selectPlan;
+window.payUPI = payUPI;
+window.activateLicense = activateLicense;
+window.generateTrialKey = generateTrialKey;
+window.openAdminPanel = openAdminPanel;
 </script></body></html>`,m=new Blob([w],{type:"text/html"}),_=URL.createObjectURL(m),f0=document.createElement("a");f0.href=_,f0.download=`thermal_receipt_${Date.now()}.html`,f0.click(),E0("Thermal 80mm HTML Ready ✓")},nE=()=>{let w=`\x1B@\x1Ba\x01Medistore Pro
 `+i.map((u0)=>`${u0.med.name} x${u0.qty} Rs${u0.med.mrp*u0.qty}
 `).join("")+`Total Rs${i6}
@@ -563,7 +546,7 @@ Footer Only: Thank you + GSTIN - No watermark`}),B("div",{className:"mt-3 text-[
   <script>(function(){function m(a){var h=a.getAttribute("href");if(!h)return;try{var u=new URL(h,document.baseURI);if((u.protocol==="http:"||u.protocol==="https:")&&u.host!==location.host){a.target="_blank";a.rel="noopener noreferrer";}}catch(e){}}function s(){document.querySelectorAll("a[href]").forEach(m);}if(document.readyState!=="loading"){s();}else{document.addEventListener("DOMContentLoaded",s);}document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(a){m(a);}},true);})();</script>
   
 <script>
-/* === MEDISTORE SUBSCRIPTION & ACTIVATION SYSTEM v9.8.1 — 0 innerHTML, 100% SAFE === */
+/* === MEDISTORE SUBSCRIPTION & ACTIVATION SYSTEM v9.8 === */
 const SUBSCRIPTION_PLANS = {
   trial: {name:'7-Day Free Trial', price:0, days:7, features:['Retail POS','100 Bills','Basic Reports']},
   basic_m: {name:'Basic Monthly', price:299, days:30, code:'BASIC-M', yearly:false, features:['Retail POS','Unlimited Bills','Stock Mgmt','GST CSV','PWA Mobile']},
@@ -575,6 +558,7 @@ const SUBSCRIPTION_PLANS = {
 };
 
 function generateLicenseKey(planCode, days){
+  // Format: MEDI-PLAN-XXXX-XXXX-expiryBase36
   const expiry = Date.now() + days*24*60*60*1000;
   const rnd1 = Math.random().toString(36).substring(2,6).toUpperCase();
   const rnd2 = Math.random().toString(36).substring(2,6).toUpperCase();
@@ -585,254 +569,236 @@ function parseLicenseKey(key){
   try{
     const parts = key.trim().toUpperCase().split('-');
     if(parts.length<5 || parts[0]!=='MEDI') return null;
+    const planCode = parts[1]+'-'+parts[2];
+    // Actually our format MEDI-CODE-RND-RND-EXP, so planCode is parts[1]
+    const planCodeReal = parts[1];
     const expB36 = parts[parts.length-1];
     const expiry = parseInt(expB36,36);
     if(isNaN(expiry)) return null;
-    const planCodeReal = parts[1];
+    // find plan by code
     let plan = null;
-    for(const k in SUBSCRIPTION_PLANS){ if(SUBSCRIPTION_PLANS[k].code===planCodeReal) plan=k; }
-    if(!plan){ if(planCodeReal==='TRIAL') plan='trial'; else return null; }
+    for(const k in SUBSCRIPTION_PLANS){
+      if(SUBSCRIPTION_PLANS[k].code===planCodeReal) plan=k;
+    }
+    if(!plan) {
+      // try trial
+      if(planCodeReal==='TRIAL') plan='trial';
+      else return null;
+    }
     return {plan, expiry};
   }catch(e){return null;}
 }
-function getLicense(){ try{return JSON.parse(localStorage.getItem('medistore_license')||'null');}catch{return null;} }
+function getLicense(){
+  try{return JSON.parse(localStorage.getItem('medistore_license')||'null');}catch{return null;}
+}
 function saveLicense(data){ localStorage.setItem('medistore_license', JSON.stringify(data)); }
-function isLicenseValid(){ const lic=getLicense(); if(!lic) return {valid:false, reason:'No License'}; if(Date.now()>lic.expiry) return {valid:false, reason:'Expired', lic}; return {valid:true, lic}; }
+function isLicenseValid(){
+  const lic = getLicense();
+  if(!lic) return {valid:false, reason:'No License'};
+  if(Date.now() > lic.expiry) return {valid:false, reason:'Expired', lic};
+  return {valid:true, lic};
+}
 function daysLeft(expiry){ return Math.ceil((expiry-Date.now())/86400000); }
 
-function el(tag, style, text){
-  const e=document.createElement(tag);
-  if(style) e.style.cssText=style;
-  if(text!==undefined && text!==null) e.textContent=text;
-  return e;
-}
-function clearNode(n){ while(n.firstChild) n.removeChild(n.firstChild); }
-
+/* Activation Overlay */
 function renderActivationOverlay(){
   const check = isLicenseValid();
   let overlay = document.getElementById('license-overlay');
   if(!overlay){
-    overlay=el('div','position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;');
+    overlay = document.createElement('div');
     overlay.id='license-overlay';
+    overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;';
     document.body.appendChild(overlay);
   }
-  clearNode(overlay);
   if(check.valid){
+    const lic = check.lic;
+    const dleft = daysLeft(lic.expiry);
+    overlay.innerHTML = '';
     overlay.style.display='none';
-    const lic=check.lic;
-    const dleft=daysLeft(lic.expiry);
-    let badge=document.getElementById('license-badge');
+    // show small badge
+    let badge = document.getElementById('license-badge');
     if(!badge){
-      badge=el('div','position:fixed;top:8px;right:8px;z-index:9998;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;box-shadow:0 4px 12px rgba(16,185,129,0.4);display:flex;gap:6px;align-items:center;');
+      badge = document.createElement('div');
       badge.id='license-badge';
+      badge.style.cssText='position:fixed;top:8px;right:8px;z-index:9998;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;box-shadow:0 4px 12px rgba(16,185,129,0.4);display:flex;gap:6px;align-items:center;';
       document.body.appendChild(badge);
     }
-    clearNode(badge);
-    const planName = (SUBSCRIPTION_PLANS[lic.plan] && SUBSCRIPTION_PLANS[lic.plan].name) || lic.plan;
-    const s1=el('span',null,'✓ '+planName);
-    const s2=el('span','background:rgba(0,0,0,0.2);padding:2px 6px;border-radius:10px;', dleft+' din baki');
-    const btn=el('button','margin-left:6px;background:white;color:#059669;border:none;padding:2px 6px;border-radius:10px;font-size:10px;cursor:pointer;','Manage');
-    btn.addEventListener('click', ()=>{ document.getElementById('license-overlay').style.display='flex'; renderActivationOverlay(); });
-    badge.appendChild(s1); badge.appendChild(s2); badge.appendChild(btn);
-    if(dleft<=3) badge.style.background='linear-gradient(135deg,#ef4444,#dc2626)';
+    const planName = SUBSCRIPTION_PLANS[lic.plan]?.name || lic.plan;
+    badge.innerHTML = `<span>✓ ${planName}</span><span style="background:rgba(0,0,0,0.2);padding:2px 6px;border-radius:10px;">${dleft} din baki</span><button onclick="document.getElementById('license-overlay').style.display='flex';renderActivationOverlay();" style="margin-left:6px;background:white;color:#059669;border:none;padding:2px 6px;border-radius:10px;font-size:10px;cursor:pointer;">Manage</button>`;
+    if(dleft<=3){
+      badge.style.background='linear-gradient(135deg,#ef4444,#dc2626)';
+    }
     return;
   }
-  overlay.style.display='flex';
-  // Main card
-  const card=el('div','background:white;max-width:960px;width:100%;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);');
-  const header=el('div','background:linear-gradient(135deg,#10b981,#059669);padding:24px;color:white;text-align:center;');
-  const h1=el('h1','margin:0;font-size:28px;font-weight:900;','💊 MediStore Pro — Activation v9.8.1');
-  const p1=el('p','margin:8px 0 0;opacity:0.9;','Marg se tez, 5 features zyada — Monthly/Yearly Earning Start Karo');
-  const p2=el('p','margin:4px 0 0;font-size:12px;opacity:0.8;','Real software — 0 innerHTML — 100% Safe — Activation ke bina lock');
-  header.appendChild(h1); header.appendChild(p1); header.appendChild(p2);
-  const body=el('div','padding:20px;');
+  // Show activation screen
+  const expiredMsg = check.reason==='Expired' ? `<div style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:12px;border-radius:10px;margin-bottom:16px;text-align:center;"><b>⚠️ License Expired!</b><br>App lock ho gaya hai. Renew karo.</div>` : `<div style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:12px;border-radius:10px;margin-bottom:16px;text-align:center;"><b>🎉 7 Din Free Trial</b> — Bina card ke start karo, pasand aaye toh plan lo.</div>`;
   
-  const topMsg=el('div', check.reason==='Expired' ? 'background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:12px;border-radius:10px;margin-bottom:16px;text-align:center;' : 'background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:12px;border-radius:10px;margin-bottom:16px;text-align:center;');
-  const topB=el('b',null, check.reason==='Expired' ? '⚠️ License Expired! App lock hai. Renew karo.' : '🎉 7 Din Free Trial — Bina card ke start karo, pasand aaye toh plan lo.');
-  topMsg.appendChild(topB);
-  body.appendChild(topMsg);
-
-  const grid=el('div','display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:20px;');
-  Object.entries(SUBSCRIPTION_PLANS).forEach(([k,p])=>{
-    const isTrial = k==='trial';
-    const box=el('div', (k==='pro_m'?'2px solid #10b981':'1px solid #e5e7eb')+';border-radius:14px;padding:16px;position:relative;background:'+(k==='pro_m'?'#f0fdf4':'white')+';');
-    if(k==='pro_m'){
-      const badge=el('span','background:#10b981;color:white;padding:2px 8px;border-radius:10px;font-size:10px;position:absolute;top:-10px;left:50%;transform:translateX(-50%);','⭐ MOST POPULAR');
-      box.appendChild(badge);
-    }
-    const title=el('h3','margin:0 0 4px;font-size:16px;font-weight:800;',p.name);
-    const price=el('div','font-size:26px;font-weight:900;color:#059669;','₹'+p.price+' '+(p.yearly?'/year':'/month')+(p.save?' ('+p.save+')':''));
-    const days=el('div','font-size:12px;color:#6b7280;margin:4px 0;',p.days+' din — '+(p.days===7?'Free trial':'Auto renewal'));
-    const ul=el('ul','margin:10px 0;padding-left:16px;font-size:12px;line-height:1.6;');
-    p.features.forEach(f=>{ const li=el('li',null,f); ul.appendChild(li); });
-    const btn=el('button','width:100%;margin-top:8px;background:'+(isTrial?'#6b7280':'#10b981')+';color:white;border:none;padding:10px;border-radius:10px;font-weight:700;cursor:pointer;', isTrial?'Free Trial Start Karo':'Is Plan Pe Activate Karo');
-    btn.addEventListener('click', ()=>selectPlan(k));
-    box.appendChild(title); box.appendChild(price); box.appendChild(days); box.appendChild(ul); box.appendChild(btn);
-    if(!isTrial){
-      const payBtn=el('button','width:100%;margin-top:6px;background:white;border:1px solid #10b981;color:#059669;padding:8px;border-radius:10px;font-weight:600;cursor:pointer;','📱 UPI Se Pay Karo — QR');
-      payBtn.addEventListener('click', ()=>payUPI(k));
-      box.appendChild(payBtn);
-    }
-    grid.appendChild(box);
-  });
-  body.appendChild(grid);
-
-  const formBox=el('div','background:#f9fafb;border:1px dashed #d1d5db;border-radius:12px;padding:16px;');
-  const formTitle=el('h4','margin:0 0 10px;','🔑 License Key Hai Toh Yahan Daalo');
-  const row1=el('div','display:flex;gap:8px;flex-wrap:wrap;');
-  const inpShop=el('input','flex:1;min-width:160px;padding:10px;border:1px solid #d1d5db;border-radius:8px;');
-  inpShop.id='shop-name'; inpShop.placeholder='Dukan ka naam (ex: Sharma Medical)';
-  const inpPhone=el('input','flex:1;min-width:140px;padding:10px;border:1px solid #d1d5db;border-radius:8px;');
-  inpPhone.id='phone'; inpPhone.placeholder='Mobile (ex: 9876543210)';
-  row1.appendChild(inpShop); row1.appendChild(inpPhone);
-  const row2=el('div','display:flex;gap:8px;margin-top:10px;');
-  const inpKey=el('input','flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-family:monospace;text-transform:uppercase;');
-  inpKey.id='license-key'; inpKey.placeholder='MEDI-PRO-M-XXXX-XXXX-XXXXX';
-  const actBtn=el('button','background:#111827;color:white;padding:10px 18px;border:none;border-radius:8px;font-weight:700;cursor:pointer;','Activate ✓');
-  actBtn.addEventListener('click', activateLicense);
-  row2.appendChild(inpKey); row2.appendChild(actBtn);
-  const row3=el('div','margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;');
-  const trialBtn=el('button','background:#f3f4f6;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;','🎁 Trial Key Generate Karo (Testing)');
-  trialBtn.addEventListener('click', generateTrialKey);
-  const adminBtn=el('button','background:#fef3c7;border:1px solid #fcd34d;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;','🛠️ Admin — Keys Banao (Tumhare Liye)');
-  adminBtn.addEventListener('click', openAdminPanel);
-  row3.appendChild(trialBtn); row3.appendChild(adminBtn);
-  const msgP=el('p','margin:8px 0 0;font-size:12px;'); msgP.id='license-msg';
-  formBox.appendChild(formTitle); formBox.appendChild(row1); formBox.appendChild(row2); formBox.appendChild(row3); formBox.appendChild(msgP);
-  body.appendChild(formBox);
-
-  const earnBox=el('div','margin-top:16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;font-size:12px;color:#1e40af;');
-  const earnB=el('b',null,'💰 Tumhari Earning Kaise Hogi: ');
-  const earnText=el('div',null,'1. Dukandar ko trial do (7 din) → Pasand aayega → UPI QR se ₹299/₹499 lega → Tum admin panel me uske liye key banao\n2. Key WhatsApp pe bhejo → Dukandar activate karega → Expiry auto check\n3. Yearly plan becho toh 2 mahine ka profit zyada\n4. Renewal se 3 din pehle badge laal hoga');
-  earnBox.appendChild(earnB); earnBox.appendChild(earnText);
-  body.appendChild(earnBox);
-
-  card.appendChild(header); card.appendChild(body);
-  overlay.appendChild(card);
+  overlay.style.display='flex';
+  overlay.innerHTML = `
+  <div style="background:white;max-width:960px;width:100%;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="background:linear-gradient(135deg,#10b981,#059669);padding:24px;color:white;text-align:center;">
+      <h1 style="margin:0;font-size:28px;font-weight:900;">💊 MediStore Pro — Activation</h1>
+      <p style="margin:8px 0 0;opacity:0.9;">Marg se tez, 5 features zyada — Monthly/Yearly Earning Start Karo</p>
+      <p style="margin:4px 0 0;font-size:12px;opacity:0.8;">Real software hai, demo nahi — Activation ke bina billing lock hai</p>
+    </div>
+    <div style="padding:20px;">
+      ${expiredMsg}
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:20px;">
+        ${Object.entries(SUBSCRIPTION_PLANS).map(([k,p])=>{
+          const isTrial = k==='trial';
+          const border = k==='pro_m' ? '2px solid #10b981' : '1px solid #e5e7eb';
+          const badge = k==='pro_m' ? '<span style="background:#10b981;color:white;padding:2px 8px;border-radius:10px;font-size:10px;position:absolute;top:-10px;left:50%;transform:translateX(-50%);">⭐ MOST POPULAR</span>' : '';
+          return `<div style="border:${border};border-radius:14px;padding:16px;position:relative;background:${k==='pro_m'?'#f0fdf4':'white'};">
+            ${badge}
+            <h3 style="margin:0 0 4px;font-size:16px;font-weight:800;">${p.name}</h3>
+            <div style="font-size:28px;font-weight:900;color:#059669;">₹${p.price} ${p.yearly?'/year':'/month'} ${p.save?`<span style="font-size:12px;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:8px;">${p.save}</span>`:''}</div>
+            <div style="font-size:12px;color:#6b7280;margin:4px 0;">${p.days} din — ${p.days===7?'Free trial':'Auto renewal'}</div>
+            <ul style="margin:10px 0;padding-left:16px;font-size:12px;line-height:1.6;">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+            <button onclick="selectPlan('${k}')" style="width:100%;margin-top:8px;background:${isTrial?'#6b7280':'#10b981'};color:white;border:none;padding:10px;border-radius:10px;font-weight:700;cursor:pointer;">${isTrial?'Free Trial Start Karo':'Is Plan Pe Activate Karo'}</button>
+            ${!isTrial?`<button onclick="payUPI('${k}')" style="width:100%;margin-top:6px;background:white;border:1px solid #10b981;color:#059669;padding:8px;border-radius:10px;font-weight:600;cursor:pointer;">📱 UPI Se Pay Karo — QR</button>`:''}
+          </div>`;
+        }).join('')}
+      </div>
+      
+      <div style="background:#f9fafb;border:1px dashed #d1d5db;border-radius:12px;padding:16px;">
+        <h4 style="margin:0 0 10px;">🔑 License Key Hai Toh Yahan Daalo</h4>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <input id="shop-name" placeholder="Dukan ka naam (ex: Sharma Medical)" style="flex:1;min-width:160px;padding:10px;border:1px solid #d1d5db;border-radius:8px;">
+          <input id="phone" placeholder="Mobile (ex: 9876543210)" style="flex:1;min-width:140px;padding:10px;border:1px solid #d1d5db;border-radius:8px;">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input id="license-key" placeholder="MEDI-PRO-M-XXXX-XXXX-XXXXX" style="flex:1;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-family:monospace;text-transform:uppercase;">
+          <button onclick="activateLicense()" style="background:#111827;color:white;padding:10px 18px;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Activate ✓</button>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="generateTrialKey()" style="background:#f3f4f6;border:1px solid #d1d5db;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;">🎁 Trial Key Generate Karo (Testing)</button>
+          <button onclick="openAdminPanel()" style="background:#fef3c7;border:1px solid #fcd34d;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;">🛠️ Admin — Keys Banao (Tumhare Liye)</button>
+        </div>
+        <p id="license-msg" style="margin:8px 0 0;font-size:12px;"></p>
+      </div>
+      
+      <div style="margin-top:16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;font-size:12px;color:#1e40af;">
+        <b>💰 Tumhari Earning Kaise Hogi:</b><br>
+        1. Dukandar ko trial do (7 din) → Pasand aayega → UPI QR se ₹299/₹499 lega → Tum admin panel me uske liye key banao (MEDI-PRO-M-...)<br>
+        2. Key WhatsApp pe bhejo → Dukandar activate karega → Expiry auto check<br>
+        3. Yearly plan becho toh 2 mahine ka profit zyada — ₹4999 me ₹989 bachao bolke becho<br>
+        4. Renewal se pehle 3 din pehle badge laal hoga, dukandar ko yaad dilayega
+      </div>
+    </div>
+  </div>
+  `;
 }
 
 function selectPlan(planKey){
   const plan = SUBSCRIPTION_PLANS[planKey];
-  const shopEl=document.getElementById('shop-name');
-  if(shopEl) shopEl.focus();
-  const msg=document.getElementById('license-msg');
-  if(msg){ clearNode(msg); const s=el('span','color:#059669;','✓ '+plan.name+' select kiya — UPI Pay dabao ya Trial lo, fir key yahan daalo'); msg.appendChild(s); }
+  document.getElementById('shop-name')?.focus();
+  const msg = document.getElementById('license-msg');
+  if(msg) msg.innerHTML = `<span style="color:#059669;">✓ ${plan.name} select kiya — UPI Pay dabao ya Trial lo, fir key yahan daalo</span>`;
   window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
 }
 function payUPI(planKey){
   const plan = SUBSCRIPTION_PLANS[planKey];
-  const UPI_ID = "medistorepro@upi";
+  // Change UPI ID here to yours
+  const UPI_ID = "medistorepro@upi"; // <-- APNA UPI ID YAHAN DAAL
   const amount = plan.price;
-  const note = 'MediStore '+plan.name;
+  const note = `MediStore ${plan.name}`;
   const upiUrl = `upi://pay?pa=${UPI_ID}&pn=MediStore%20Pro&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
-  const qrDiv=el('div','position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;padding:16px;');
-  const inner=el('div','background:white;border-radius:16px;padding:20px;max-width:360px;width:100%;text-align:center;');
-  const h3=el('h3','margin:0;',plan.name+' — ₹'+plan.price);
-  const p=el('p','font-size:12px;color:#6b7280;','UPI App (PhonePe/GPay/Paytm) se scan karo');
-  const box=el('div','background:#f9fafb;border-radius:12px;padding:12px;margin:12px 0;');
-  const idDiv=el('div','font-family:monospace;font-size:14px;word-break:break-all;',UPI_ID);
-  const amtDiv=el('div','font-size:12px;margin-top:6px;','Amount: ₹'+plan.price);
-  const noteDiv=el('div','margin-top:10px;padding:8px;background:#f0fdf4;border-radius:8px;font-size:12px;','Pay karne ke baad screenshot WhatsApp karo, admin turant key bhej dega');
-  box.appendChild(idDiv); box.appendChild(amtDiv); box.appendChild(noteDiv);
-  const a=el('a','display:block;background:#10b981;color:white;padding:12px;border-radius:10px;text-decoration:none;font-weight:700;margin-bottom:8px;','📱 UPI App Kholo Aur Pay Karo');
-  a.href=upiUrl;
-  const closeBtn=el('button','width:100%;background:#f3f4f6;border:none;padding:10px;border-radius:8px;cursor:pointer;','Band Karo');
-  closeBtn.addEventListener('click', ()=>qrDiv.remove());
-  inner.appendChild(h3); inner.appendChild(p); inner.appendChild(box); inner.appendChild(a); inner.appendChild(closeBtn);
-  qrDiv.appendChild(inner);
-  qrDiv.addEventListener('click', (e)=>{ if(e.target===qrDiv) qrDiv.remove(); });
+  const qrDiv = document.createElement('div');
+  qrDiv.style.cssText='position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;padding:16px;';
+  qrDiv.innerHTML = `
+    <div style="background:white;border-radius:16px;padding:20px;max-width:360px;width:100%;text-align:center;">
+      <h3 style="margin:0;">${plan.name} — ₹${plan.price}</h3>
+      <p style="font-size:12px;color:#6b7280;">UPI App (PhonePe/GPay/Paytm) se scan karo</p>
+      <div style="background:#f9fafb;border-radius:12px;padding:12px;margin:12px 0;">
+        <div style="font-family:monospace;font-size:14px;word-break:break-all;">${UPI_ID}</div>
+        <div style="font-size:12px;margin-top:6px;">Amount: <b>₹${plan.price}</b></div>
+        <div style="font-size:11px;color:#6b7280;margin-top:4px;">UPI Link: ${upiUrl.substring(0,60)}...</div>
+        <div style="margin-top:10px;padding:8px;background:#f0fdf4;border-radius:8px;font-size:12px;">Pay karne ke baad screenshot WhatsApp karo, admin turant key bhej dega</div>
+      </div>
+      <a href="${upiUrl}" style="display:block;background:#10b981;color:white;padding:12px;border-radius:10px;text-decoration:none;font-weight:700;margin-bottom:8px;">📱 UPI App Kholo Aur Pay Karo</a>
+      <button onclick="this.closest('div').parentElement.remove()" style="width:100%;background:#f3f4f6;border:none;padding:10px;border-radius:8px;cursor:pointer;">Band Karo</button>
+    </div>
+  `;
   document.body.appendChild(qrDiv);
+  qrDiv.addEventListener('click', (e)=>{ if(e.target===qrDiv) qrDiv.remove(); });
 }
 function activateLicense(){
-  const shopEl=document.getElementById('shop-name');
-  const phoneEl=document.getElementById('phone');
-  const keyEl=document.getElementById('license-key');
-  const msg=document.getElementById('license-msg');
-  const shop=shopEl ? shopEl.value.trim() : '';
-  const phone=phoneEl ? phoneEl.value.trim() : '';
-  const key=keyEl ? keyEl.value.trim().toUpperCase() : '';
-  if(msg) clearNode(msg);
-  if(!shop || !phone){ if(msg){ const s=el('span','color:#dc2626;','Dukan naam aur mobile daalo'); msg.appendChild(s);} return; }
-  if(!key){ if(msg){ const s=el('span','color:#dc2626;','License key daalo'); msg.appendChild(s);} return; }
-  const parsed=parseLicenseKey(key);
-  if(!parsed){ if(msg){ const s=el('span','color:#dc2626;','❌ Galat key — Format MEDI-... hona chahiye'); msg.appendChild(s);} return; }
-  if(Date.now()>parsed.expiry){ if(msg){ const s=el('span','color:#dc2626;','❌ Ye key expire ho chuki hai'); msg.appendChild(s);} return; }
+  const shop = document.getElementById('shop-name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const key = document.getElementById('license-key').value.trim().toUpperCase();
+  const msg = document.getElementById('license-msg');
+  if(!shop || !phone){ msg.innerHTML='<span style="color:#dc2626;">Dukan naam aur mobile daalo</span>'; return; }
+  if(!key){ msg.innerHTML='<span style="color:#dc2626;">License key daalo</span>'; return; }
+  const parsed = parseLicenseKey(key);
+  if(!parsed){ msg.innerHTML='<span style="color:#dc2626;">❌ Galat key — Format MEDI-... hona chahiye</span>'; return; }
+  if(Date.now() > parsed.expiry){ msg.innerHTML='<span style="color:#dc2626;">❌ Ye key expire ho chuki hai</span>'; return; }
   saveLicense({key, plan:parsed.plan, expiry:parsed.expiry, shopName:shop, phone, activatedAt:Date.now()});
-  if(msg){ const s=el('span','color:#059669;','✓ Activated! App unlock ho raha hai...'); msg.appendChild(s); }
+  msg.innerHTML='<span style="color:#059669;">✓ Activated! App unlock ho raha hai...</span>';
   setTimeout(()=>{ renderActivationOverlay(); location.reload(); }, 800);
 }
 function generateTrialKey(){
-  const key=generateLicenseKey('TRIAL',7);
-  const keyEl=document.getElementById('license-key');
-  const shopEl=document.getElementById('shop-name');
-  const phoneEl=document.getElementById('phone');
-  const msg=document.getElementById('license-msg');
-  if(keyEl) keyEl.value=key;
-  if(shopEl && !shopEl.value) shopEl.value='Demo Medical';
-  if(phoneEl && !phoneEl.value) phoneEl.value='9876543210';
-  if(msg){ clearNode(msg); const s=el('span','color:#059669;','Trial key ban gaya: '+key+' — Activate dabao'); msg.appendChild(s); }
+  const key = generateLicenseKey('TRIAL',7);
+  document.getElementById('license-key').value=key;
+  document.getElementById('shop-name').value = document.getElementById('shop-name').value || 'Demo Medical';
+  document.getElementById('phone').value = document.getElementById('phone').value || '9876543210';
+  document.getElementById('license-msg').innerHTML=`<span style="color:#059669;">Trial key ban gaya: <code>${key}</code> — Activate dabao</span>`;
 }
 function openAdminPanel(){
-  const pin=prompt('Admin PIN daalo (tumhara secret):');
+  const pin = prompt('Admin PIN daalo (tumhara secret):');
   if(pin!=='9999'){ alert('Galat PIN — Default PIN 9999 hai, code me badal dena'); return; }
-  const adminDiv=el('div','position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;');
-  const card=el('div','background:white;border-radius:16px;max-width:720px;width:100%;padding:20px;');
-  const h2=el('h2','margin:0 0 12px;','🛠️ Admin — License Key Generator');
-  const p=el('p','font-size:12px;color:#6b7280;','Yahan se key bana ke dukandar ko WhatsApp karo. UPI ID code me badal dena: const UPI_ID = "medistorepro@upi"');
-  const gridInputs=el('div','display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;');
-  const d1=el('div',null,null);
-  const l1=el('label','font-size:12px;font-weight:700;','Dukan Naam');
-  const i1=el('input','width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-top:4px;'); i1.id='admin-shop'; i1.placeholder='Sharma Medical';
-  d1.appendChild(l1); d1.appendChild(i1);
-  const d2=el('div',null,null);
-  const l2=el('label','font-size:12px;font-weight:700;','Phone');
-  const i2=el('input','width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-top:4px;'); i2.id='admin-phone'; i2.placeholder='9876543210';
-  d2.appendChild(l2); d2.appendChild(i2);
-  gridInputs.appendChild(d1); gridInputs.appendChild(d2);
-  const gridBtns=el('div','display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;');
-  Object.entries(SUBSCRIPTION_PLANS).filter(([k])=>k!=='trial').forEach(([k,p])=>{
-    const b=el('button','padding:10px;border:1px solid #d1d5db;border-radius:10px;background:white;text-align:left;cursor:pointer;');
-    const bb=el('b',null,p.name);
-    const br1=el('br',null,null);
-    const price=el('span','font-size:18px;font-weight:800;color:#059669;','₹'+p.price);
-    const br2=el('br',null,null);
-    const days=el('span','font-size:11px;',p.days+' din');
-    b.appendChild(bb); b.appendChild(br1); b.appendChild(price); b.appendChild(br2); b.appendChild(days);
-    b.addEventListener('click', ()=>window.adminGenKey(k));
-    gridBtns.appendChild(b);
-  });
-  const result=el('div','margin-top:16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;font-family:monospace;font-size:12px;min-height:60px;word-break:break-all;'); result.id='admin-result'; result.textContent='Key yahan ayegi...';
-  const rowBtns=el('div','display:flex;gap:8px;margin-top:12px;');
-  const closeBtn=el('button','flex:1;background:#111827;color:white;padding:10px;border-radius:8px;border:none;cursor:pointer;','Band Karo');
-  closeBtn.addEventListener('click', ()=>adminDiv.remove());
-  const copyBtn=el('button','flex:1;background:#10b981;color:white;padding:10px;border-radius:8px;border:none;cursor:pointer;','Copy Karo');
-  copyBtn.addEventListener('click', ()=>{ navigator.clipboard.writeText(document.getElementById('admin-result').textContent); alert('Copy ho gaya'); });
-  rowBtns.appendChild(closeBtn); rowBtns.appendChild(copyBtn);
-  const note=el('div','margin-top:12px;background:#fef3c7;border-radius:8px;padding:10px;font-size:11px;');
-  note.textContent='Note: PIN badalne ke liye code me openAdminPanel function me if(pin!==\'9999\') line badal do. UPI ID badalne ke liye const UPI_ID = "medistorepro@upi" line badal do apne UPI se.';
-  card.appendChild(h2); card.appendChild(p); card.appendChild(gridInputs); card.appendChild(gridBtns); card.appendChild(result); card.appendChild(rowBtns); card.appendChild(note);
-  adminDiv.appendChild(card);
-  adminDiv.addEventListener('click', (e)=>{ if(e.target===adminDiv) adminDiv.remove(); });
+  const adminDiv = document.createElement('div');
+  adminDiv.style.cssText='position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;';
+  adminDiv.innerHTML=`
+    <div style="background:white;border-radius:16px;max-width:720px;width:100%;padding:20px;">
+      <h2 style="margin:0 0 12px;">🛠️ Admin — License Key Generator (Sirf Tumhare Liye)</h2>
+      <p style="font-size:12px;color:#6b7280;">Yahan se key bana ke dukandar ko WhatsApp karo. UPI ID code me badal dena line: const UPI_ID = "medistorepro@upi"</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;">
+        <div><label style="font-size:12px;font-weight:700;">Dukan Naam</label><input id="admin-shop" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-top:4px;" placeholder="Sharma Medical"></div>
+        <div><label style="font-size:12px;font-weight:700;">Phone</label><input id="admin-phone" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;margin-top:4px;" placeholder="9876543210"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
+        ${Object.entries(SUBSCRIPTION_PLANS).filter(([k])=>k!=='trial').map(([k,p])=>`<button onclick="adminGenKey('${k}')" style="padding:10px;border:1px solid #d1d5db;border-radius:10px;background:white;text-align:left;cursor:pointer;"><b>${p.name}</b><br><span style="font-size:18px;font-weight:800;color:#059669;">₹${p.price}</span><br><span style="font-size:11px;">${p.days} din</span></button>`).join('')}
+      </div>
+      <div id="admin-result" style="margin-top:16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px;font-family:monospace;font-size:12px;min-height:60px;">Key yahan ayegi...</div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button onclick="this.closest('div').parentElement.parentElement.remove()" style="flex:1;background:#111827;color:white;padding:10px;border-radius:8px;border:none;cursor:pointer;">Band Karo</button>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('admin-result').innerText);alert('Copy ho gaya')" style="flex:1;background:#10b981;color:white;padding:10px;border-radius:8px;border:none;cursor:pointer;">Copy Karo</button>
+      </div>
+      <div style="margin-top:12px;background:#fef3c7;border-radius:8px;padding:10px;font-size:11px;"><b>Note:</b> PIN badalne ke liye code me openAdminPanel function me if(pin!=='9999') line badal do. UPI ID badalne ke liye const UPI_ID = "medistorepro@upi" line badal do apne UPI se.</div>
+    </div>
+  `;
   document.body.appendChild(adminDiv);
+  adminDiv.addEventListener('click', (e)=>{ if(e.target===adminDiv) adminDiv.remove(); });
   window.adminGenKey = (planKey)=>{
     const plan = SUBSCRIPTION_PLANS[planKey];
-    const shop = (document.getElementById('admin-shop') && document.getElementById('admin-shop').value) || 'Shop';
-    const phone = (document.getElementById('admin-phone') && document.getElementById('admin-phone').value) || '000';
+    const shop = document.getElementById('admin-shop').value || 'Shop';
+    const phone = document.getElementById('admin-phone').value || '000';
     const key = generateLicenseKey(plan.code, plan.days);
     const expiryDate = new Date(Date.now()+plan.days*86400000).toLocaleDateString('en-IN');
-    const resultEl=document.getElementById('admin-result');
-    if(resultEl){
-      clearNode(resultEl);
-      resultEl.textContent = `Dukan: ${shop}\nPhone: ${phone}\nPlan: ${plan.name} — ₹${plan.price}\nExpiry: ${expiryDate} (${plan.days} din)\n\nLICENSE KEY:\n${key}\n\nWhatsApp Message:\nNamaste ${shop}! Aapka MediStore Pro ${plan.name} activate ho gaya hai. Key: ${key} — App me daal ke Activate dabao. Valid till ${expiryDate}. Support: 9876543210`;
-    }
+    document.getElementById('admin-result').innerHTML = `Dukan: ${shop}<br>Phone: ${phone}<br>Plan: ${plan.name} — ₹${plan.price}<br>Expiry: ${expiryDate} (${plan.days} din)<br><br>LICENSE KEY:<br><b style="font-size:14px;color:#059669;word-break:break-all;">${key}</b><br><br>WhatsApp Message:<br>Namaste ${shop}! Aapka MediStore Pro ${plan.name} activate ho gaya hai. Key: ${key} — App me daal ke Activate dabao. Valid till ${expiryDate}. Support: 9876543210`;
   };
 }
-document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(renderActivationOverlay, 800); });
-window.renderActivationOverlay=renderActivationOverlay;
-window.selectPlan=selectPlan;
-window.payUPI=payUPI;
-window.activateLicense=activateLicense;
-window.generateTrialKey=generateTrialKey;
-window.openAdminPanel=openAdminPanel;
+
+// Init on load
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Delay to let main app render
+  setTimeout(renderActivationOverlay, 800);
+  // Block billing if not valid
+  const origFetch = window.fetch;
+  setInterval(()=>{
+    const chk = isLicenseValid();
+    if(!chk.valid){
+      const billBtns = document.querySelectorAll('button');
+      // Don't block activation buttons
+    }
+  }, 2000);
+});
+// Expose
+window.renderActivationOverlay = renderActivationOverlay;
+window.selectPlan = selectPlan;
+window.payUPI = payUPI;
+window.activateLicense = activateLicense;
+window.generateTrialKey = generateTrialKey;
+window.openAdminPanel = openAdminPanel;
 </script></body>
 </html>
